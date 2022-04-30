@@ -1,4 +1,4 @@
-package src.Users;
+package Users;
 
 public class Customer extends User{
 	/*

@@ -1,4 +1,4 @@
-package src.test;
+package test;
 
 import java.lang.System;
 public class test{

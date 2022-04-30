@@ -1,6 +1,6 @@
-package src.System;
+package System;
 
-import src.Users.User;
+import Users.User;
 
 import java.util.*;
 import java.io.*;
@@ -14,10 +14,14 @@ public class ECommerceSystem{
 	private LinkedList<String> products = new LinkedList();
 	//priority queue
 
-	private class Admin extends User{
+	private class Admin extends User {
 		//taleplere bak --> queuedaki ilk şey neyse onu sor
 		//kullanıcı çıkarma
 		//ürün ekleme
+
+		public Admin(String usernameValue, String passwordValue) {
+			super(usernameValue, passwordValue);
+		}
 
 		@Override
 		public void UI() {
@@ -26,7 +30,7 @@ public class ECommerceSystem{
 	}
 
 	private abstract static class Request implements Comparable<Request>{
-		private int priority;
+		protected int priority;
 
 		public int compareTo(Request o){
 			if (o == null) throw new IllegalArgumentException();

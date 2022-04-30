@@ -1,4 +1,4 @@
-package src.Users;
+package Users;
 
 public abstract class User{
 	//protected String userID;

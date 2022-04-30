@@ -1,9 +1,14 @@
-package src.Users;
+package Users;
 
 public class Seller extends User{
     private class product {
+        private String name;
+        private float price;
+        private int stock;
+
 
     }
+
 	/*
 		kayıt olma bilgileri system'de alındı --> constructor bu bilgilerle çağrılacak
 		yeni ürün eklenmesi için talep oluştur
