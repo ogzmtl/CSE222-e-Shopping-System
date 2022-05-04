@@ -1,6 +1,16 @@
-package Users;
+package MainSystem;
 
-public class Customer extends User{
+import MainSystem.User;
+
+public class Customer extends User {
+    public Customer(String usernameValue, String passwordValue) {
+        super(usernameValue, passwordValue);
+    }
+
+    @Override
+    public void UI() {
+
+    }
 	/*
 		ürünleri görüntüleme --> isim, fiyat olarak
 		mağazaları görüntüleme
@@ -14,13 +24,4 @@ public class Customer extends User{
 
 		UI implementasyonu
 	*/
-
-    public Customer(String usernameValue, String passwordValue) {
-        super(usernameValue, passwordValue);
-    }
-
-    @Override
-    public void UI() {
-
-    }
 }

@@ -1,0 +1,11 @@
+Laptop ikbal 10.0 0 oguz 15.0 2 mert 12.0 3
+Book mert 12.4 5
+Phone
+Flower
+Headphone
+Guitar
+Piano
+T-shirt
+Chess
+Cactus
+apple
