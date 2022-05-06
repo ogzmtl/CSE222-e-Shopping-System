@@ -11,7 +11,7 @@ public abstract class User{
 	}
 
 	public abstract void UI();
-hhhhbb
+
 	public boolean changePassword (String newP) {
 		if (newP == null ||
 			newP.length() < 8 ||

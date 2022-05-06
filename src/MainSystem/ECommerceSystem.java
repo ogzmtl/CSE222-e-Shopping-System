@@ -3,6 +3,8 @@ package MainSystem;
 import java.util.*;
 import java.io.*;
 import java.lang.System;
+import java.util.function.BiConsumer;
+
 @SuppressWarnings("unchecked")
 public class ECommerceSystem{
 	private Map<String, String> Sellers = new HashMap<>();
@@ -11,9 +13,9 @@ public class ECommerceSystem{
 	private Map<String, LinkedList<Product>> products = new TreeMap();
 	private PriorityQueue<Request> Requests = new PriorityQueue();
 
-	protected class Product{
-		private String productName;
-		private String sellerName;
+	protected static class Product{
+		private final String productName;
+		private final String sellerName;
 		private double price;
 		private int stock;
 
@@ -24,7 +26,29 @@ public class ECommerceSystem{
 			this.stock = stock;
 		}
 
+		public int getStock() {
+			return stock;
+		}
 
+		public double getPrice() {
+			return price;
+		}
+
+		public String getProductName() {
+			return productName;
+		}
+
+		public String getSellerName() {
+			return sellerName;
+		}
+
+		public void setStock(int stock) {
+			this.stock = stock;
+		}
+
+		public void setPrice(double price) {
+			this.price = price;
+		}
 
 		public String toString(){
 			return sellerName + " " + price + " " + stock;
@@ -123,71 +147,71 @@ public class ECommerceSystem{
 	}
 
 	public class Seller extends User {
-//    private static class Product {
-//        private String name;
-//        private float price;
-//        private int stock;
-//        private boolean published;
-//
-//        public Product(String name) {
-//            this.name = name;
-//            price = 0;
-//            stock = 0;
-//            published = false;
-//        }
-//
-//        public Product(String name, int stock) {
-//            this.name = name;
-//            price = 0;
-//            stock = stock;
-//            published = false;
-//        }
-//
-//        public Product(String name, int stock, float price, boolean published) {
-//            this.name = name;
-//            price = price;
-//            stock = stock;
-//            published = published;
-//        }
-//
-//        public void setName(String name) {
-//            this.name = name;
-//        }
-//
-//        public void setPrice(float price) {
-//            this.price = price;
-//        }
-//
-//        public void setPublished(boolean published) {
-//            this.published = published;
-//        }
-//
-//        public void setStock(int stock) {
-//            this.stock = stock;
-//        }
-//
-//        public float getPrice() {
-//            return price;
-//        }
-//
-//        public int getStock() {
-//            return stock;
-//        }
-//
-//        public String getName() {
-//            return name;
-//        }
-//
-//        public boolean isPublished() {
-//            return published;
-//        }
-//    }
-
-		private static class Order {
+		private class Order {
+			private String customerName;
+			private final int ID;
 			private Map<Product, Integer> productList;
 
-			public Order() {
+			private static int lastID = 0;
 
+			public Order() {
+				productList = new HashMap<>();
+				ID = ++lastID;
+			}
+
+			public Order(String orderString) {
+				productList = new HashMap<>();
+
+				String[] temp = orderString.split(" ");
+				ID = Integer.parseInt(temp[0]);
+				temp = Arrays.copyOfRange(temp, 1, temp.length);
+
+				String[] product_stock;
+				for (String product : temp) {
+					product_stock = product.split(",");
+					productList.put(getProduct(product_stock[0], username),
+									Integer.parseInt(product_stock[1]));
+				}
+			}
+
+			public void add(Product product, int quantity) {
+				productList.put(product, quantity);
+				product.setStock(product.getStock() - quantity);
+			}
+
+			public Integer remove(Product product){
+				return productList.remove(product);
+			}
+
+			public List<Product> process() {
+				List<Product> outOfStock = new LinkedList<>();
+
+				BiConsumer<Product, Integer> processor = new BiConsumer<Product, Integer>() {
+					@Override
+					public void accept(Product product, Integer numOfUnits) {
+						if(product.getStock() < numOfUnits)
+							outOfStock.add(product);
+
+						else
+							product.setStock(product.getStock() - numOfUnits);
+					}
+				};
+
+				productList.forEach(processor);
+
+				if(outOfStock.isEmpty())
+					return null;
+				else
+					return outOfStock;
+			}
+
+			@Override
+			public String toString() {
+				return "Order{" +
+						"customerName='" + customerName + '\'' +
+						", ID=" + ID +
+						", productList=" + productList +
+						'}';
 			}
 		}
 
@@ -218,65 +242,61 @@ public class ECommerceSystem{
 				String buffer = reader.nextLine();
 				Product targetProduct;
 
+				// Check that the file is not corrupted
+				// Each file must start with the name of the seller
 				if(!buffer.contains(username)){
 					file.renameTo(new File(username + "_damaged.txt"));
 					throw new FileNotFoundException("The file found was damaged");
 				}
 
+				// The list of products
 				buffer = reader.nextLine();
-				for(String word : buffer.split(" ")) {
-					targetProduct = getProduct(word, username);
-					if (targetProduct != null)
-						productList.add(targetProduct);
-				}
+				String[] products = buffer.split(" ");
+				for(String productName : products)
+					productList.add(getProduct(productName, username));
 
+				// The list of waiting orders
 				buffer = reader.nextLine();
-				String[] words;
-				for(String word : buffer.split(" ")) {
-					words = word.split(",");
-					targetProduct = getProduct(word, username);
-					if (targetProduct != null)
-						productList.add(targetProduct);
-				}
+				String[] orders = buffer.split("\\|");
+				for (String orderString : orders)
+					waitingOrders.add(new Order(orderString));
+
+				// The list of past orders
+				buffer = reader.nextLine();
+				orders = buffer.split("\\|");
+				for (String orderString : orders)
+					waitingOrders.add(new Order(orderString));
 			}
-		}
-
-		private int intInput(InputStream stream) throws Exception {
-			Scanner scanner = new Scanner(stream);
-			int buffer;
-
-			while(scanner.hasNext()){
-				try {
-					buffer = scanner.nextInt();
-				} catch (InputMismatchException e) {
-					continue;
-				}
-
-				return buffer;
-			}
-
-			throw new Exception("No input was detected\n");
 		}
 
 		@Override
 		public void UI() {
-			int input = 0;
-			System.out.printf("Welcome to the seller menu\n");
+			int inputInt = 0;
+			String inputStr = null;
+			Scanner scan = new Scanner(System.in);
+			System.out.print("Welcome to the seller menu\n");
 
 			while(true){
-				System.out.printf("Enter the number of an action:\n1- Order management.\n2- Add a new product.\n3- Statistics.\n0- Log out.\n");
-				try{
-					input = intInput(System.in);
-				} catch (Exception e) {
-					System.out.println("Error during getting input.");
-					e.printStackTrace();
-				}
+				System.out.print("Enter the number of an action:\n1- Order management.\n2- Add a new product.\n3- Statistics.\n0- Log out.\n");
 
-				switch (input) {
-					case 1: System.out.print("Last 10 orders:\n");
-						Iterator<Order> iterator = waitingOrders.iterator();
-						for(int i = 0; i < 10; ++i)
-							System.out.print(iterator.next());
+				inputInt = scan.nextInt();
+				switch (inputInt) {
+					case 1: if (!waitingOrders.isEmpty()) {
+						System.out.print("Oldest order:\n");
+						System.out.print(waitingOrders.peek());
+						System.out.print("Do you want to confirm the order?\n(Answer with yes or no)\n");
+						inputStr = scan.next();
+						if(inputStr.equals("yes"))
+							waitingOrders.peek().process();
+					}
+					else
+						System.out.print("There are no waiting orders.\n");
+
+					break;
+
+					case 2: case 3:
+						System.out.print("To Be Implemented\n");
+						break;
 
 					case 0: break;
 				}
@@ -326,7 +346,7 @@ public class ECommerceSystem{
 				String temp = reader.nextLine();
 				String[] lineWords = temp.trim().split("\\s+");
 				products.put(lineWords[0], new LinkedList());
-				for (int i = 1; i < lineWords.length; i+=3) products.get(lineWords[0]).add(new Product(lineWords[0], lineWords[i], Double.parseDouble(lineWords[i+1]), Integer.parseInt(lineWords[i+2])));	
+				for (int i = 1; i < lineWords.length; i+=3) products.get(lineWords[0]).add(new Product(lineWords[0], lineWords[i], Double.parseDouble(lineWords[i + 1]), Integer.parseInt(lineWords[i + 2])));
 			}
 			reader.close();
 
@@ -599,7 +619,7 @@ public class ECommerceSystem{
 		saveRequests();
 	}
 
-	public Product getProduct(String productName, String seller) {
+	private Product getProduct(String productName, String seller) {
 		LinkedList<Product> targetList = products.get(productName);
 		for(Product temp : targetList)
 			if(temp.productName.equals(productName))
