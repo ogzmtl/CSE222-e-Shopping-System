@@ -1,4 +1,4 @@
-package MainSystem.sourcepackage;
+package sourcepackage;
 import java.io.*;
 import java.util.*;
 public class BinaryTree<E> implements Serializable{

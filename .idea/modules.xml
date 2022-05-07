@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/CSE222-e-Shopping-System.iml" filepath="$PROJECT_DIR$/.idea/CSE222-e-Shopping-System.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CSE222-e-Shopping-System.iml" filepath="$PROJECT_DIR$/CSE222-e-Shopping-System.iml" />
     </modules>
   </component>
 </project>

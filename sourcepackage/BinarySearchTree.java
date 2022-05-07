@@ -1,9 +1,6 @@
-package MainSystem.sourcepackage;
-
-import  MainSystem.sourcepackage.*;
-
+package sourcepackage;
 @SuppressWarnings("unchecked")
-public class BinarySearchTree<E> extends BinaryTree<E> implements SearchTree<E> {
+public class BinarySearchTree<E> extends BinaryTree<E> implements SearchTree<E>{
 	protected boolean adder;
 	protected E deleter;
 

@@ -1,4 +1,4 @@
-package MainSystem.sourcepackage;
+package sourcepackage;
 //SearchTree interface
 public interface SearchTree<E>{
 	/**

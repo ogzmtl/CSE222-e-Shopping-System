@@ -1,10 +1,8 @@
-package MainSystem;
-
 import java.util.*;
 import java.io.*;
 import java.lang.System;
+import sourcepackage.*;
 import java.util.function.BiConsumer;
-import MainSystem.sourcepackage.*;
 
 @SuppressWarnings("unchecked")
 public class ECommerceSystem{
@@ -27,7 +25,7 @@ public class ECommerceSystem{
 	private Product getProduct(String productName, String seller) {
 		LinkedList<Product> targetList = products.get(productName);
 		for(Product temp : targetList)
-			if(temp.productName.equals(productName)) return temp;
+			if(temp.sellerName.equals(seller)) return temp;
 
 		return null;
 	}
@@ -82,7 +80,11 @@ public class ECommerceSystem{
 
 	}
 
-	private class Seller extends User {
+	public class Seller extends User {
+		private LinkedList<Order> orderHistory;
+		private Queue<Order> waitingOrders;
+		private LinkedList<Product> productList;
+
 		private class Order {
 			private final int ID;
 			private Map<Product, Integer> orderedProducts;
@@ -160,10 +162,6 @@ public class ECommerceSystem{
 			}
 		}
 
-		private LinkedList<Order> orderHistory;
-		private Queue<Order> waitingOrders;
-		private LinkedList<Product> productList;
-
 	/*
 		yeni ürün eklenmesi için talep oluştur
 		sattığı ürünlerin listesi
@@ -185,7 +183,6 @@ public class ECommerceSystem{
 			if(file.exists()){
 				Scanner reader = new Scanner(file);
 				String buffer = reader.nextLine();
-				Product targetProduct;
 
 				// Check that the file is not corrupted
 				// Each file must start with the name of the seller
@@ -195,53 +192,59 @@ public class ECommerceSystem{
 				}
 
 				// The list of products
-				buffer = reader.nextLine();
-				String[] products = buffer.split(" ");
-				for(String productName : products)
-					productList.add(getProduct(productName, username));
+				if (reader.hasNext()){
+					buffer = reader.nextLine();
+					String[] products = buffer.split(" ");
+					for(String productName : products)
+						productList.add(getProduct(productName, username));
+				}
 
 				// The list of waiting orders
+				if (reader.hasNext()){
 				buffer = reader.nextLine();
 				String[] orders = buffer.split("\\|");
 				for (String orderString : orders)
 					waitingOrders.add(new Order(orderString));
+				}
 
 				// The list of past orders
-				buffer = reader.nextLine();
-				orders = buffer.split("\\|");
-				for (String orderString : orders)
-					waitingOrders.add(new Order(orderString));
+				if (reader.hasNext()) {
+					buffer = reader.nextLine();
+					String[] orders = buffer.split("\\|");
+					for (String orderString : orders)
+						waitingOrders.add(new Order(orderString));
+				}
 			}
 		}
 
-		@Override
-		public void UI() {
-			int inputInt = 0;
-			String inputStr = null;
-			Scanner scan = new Scanner(System.in);
-			System.out.print("Welcome to the seller menu\n");
+	    @Override
+	    public void UI() {
+	        int inputInt = 0;
+	        String inputStr = null;
+	        Scanner scan = new Scanner(System.in);
+	        System.out.print("Welcome to the seller menu\n");
 
-			while(true){
-				System.out.print("Enter the number of an action:\n1- Order management.\n2- Add a new product.\n3- Statistics.\n0- Log out.\n");
+	        while(true){
+	            System.out.print("Enter the number of an action:\n1- Order management.\n2- Add a new product.\n3- Statistics.\n0- Log out.\n");
 
-				try{
-					inputInt = scan.nextInt();
-					scan.nextLine();
-					if (inputInt == 1){
-						if (!waitingOrders.isEmpty()) {
-							System.out.print("Oldest order:\n");
-							System.out.print(waitingOrders.peek());
-							System.out.print("Do you want to confirm the order?\n(Answer with yes or no)\n");
-							inputStr = scan.next();
-							if(inputStr.equals("yes")) waitingOrders.peek().process();
-						}
-						else System.out.print("There are no waiting orders.\n");
-					}
-					else if (inputInt == 2 || inputInt == 3) System.out.print("To Be Implemented\n");
-					else if (inputInt == 0) {System.out.println("GOOD-BYE!"); break;}
-					else System.out.println("Invalid choice, please try again.");
-				}
-				catch (InputMismatchException e){
+	            try{
+	            	inputInt = scan.nextInt();
+		            scan.nextLine();
+		            if (inputInt == 1){
+		            	if (!waitingOrders.isEmpty()) {
+				            System.out.print("Oldest order:\n");
+				            System.out.print(waitingOrders.peek());
+				            System.out.print("Do you want to confirm the order?\n(Answer with yes or no)\n");
+				            inputStr = scan.next();
+				            if(inputStr.equals("yes")) waitingOrders.peek().process();
+				        }
+				        else System.out.print("There are no waiting orders.\n");
+		            }
+		            else if (inputInt == 2 || inputInt == 3) System.out.print("To Be Implemented\n");
+		            else if (inputInt == 0) {System.out.println("GOOD-BYE!"); break;}
+		            else System.out.println("Invalid choice, please try again.");
+	            }
+	            catch (InputMismatchException e){
 					scan.nextLine();
 					System.out.printf("Error: %s\n", e);
 					e.printStackTrace();
@@ -249,9 +252,9 @@ public class ECommerceSystem{
 				catch (Exception e){
 					System.out.printf("Error: %s\n", e);
 					e.printStackTrace();
-				}
-			}
-		}
+				}   
+	        }
+	    }
 
 		public void addOrder (Map<Product, Integer> orderedProducts) {
 			waitingOrders.add(new Order(orderedProducts));
@@ -277,7 +280,7 @@ public class ECommerceSystem{
 			file.close();
 		}
 	}
-
+	
 	private class Admin extends User{
 		public Admin(String usernameValue, String passwordValue){
 			super(usernameValue, passwordValue);
@@ -425,7 +428,7 @@ public class ECommerceSystem{
 				String temp = reader.nextLine();
 				String[] lineWords = temp.trim().split("\\s+");
 				products.put(lineWords[0], new LinkedList());
-				for (int i = 1; i < lineWords.length; i+=3) products.get(lineWords[0]).add(new Product(lineWords[0], lineWords[i], Double.parseDouble(lineWords[i+1]), Integer.parseInt(lineWords[i+2])));
+				for (int i = 1; i < lineWords.length; i+=3) products.get(lineWords[0]).add(new Product(lineWords[0], lineWords[i], Double.parseDouble(lineWords[i+1]), Integer.parseInt(lineWords[i+2])));	
 			}
 			reader.close();
 
@@ -531,7 +534,7 @@ public class ECommerceSystem{
 									saveRequests();
 									logInFlag = false;
 								}
-								else System.out.println("Invalid username or password!");
+								else System.out.println("Invalid username or password!");	
 							}
 							else System.out.println("Invalid choice, please try again.");
 						}
@@ -597,7 +600,7 @@ public class ECommerceSystem{
 				scan.nextLine();
 				System.out.printf("Error: %s\n", e);
 				e.printStackTrace();
-			}
+			} 
 		}while(flag);
 	}
 
