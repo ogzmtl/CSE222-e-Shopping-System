@@ -1,10 +1,9 @@
 import java.util.*;
 import java.io.*;
 import java.lang.System;
+import java.util.function.BiConsumer;
 
 import sourcepackage.*;
-
-import java.util.function.BiConsumer;
 
 @SuppressWarnings("unchecked")
 public class ECommerceSystem {
@@ -26,8 +25,9 @@ public class ECommerceSystem {
 
 	private Product getProduct(String productName, String seller) {
 		LinkedList<Product> targetList = products.get(productName);
-		for(Product temp : targetList)
-			if(temp.sellerName.equals(seller)) return temp;
+		if(targetList != null)
+			for(Product temp : targetList)
+				if(temp.sellerName.equals(seller)) return temp;
 
 		return null;
 	}
@@ -38,7 +38,8 @@ public class ECommerceSystem {
 
 	}
 
-	private class Product implements Comparable, Cloneable {
+
+	private class Product implements Comparable<Product>, Cloneable {
 		private String productName;
 		private String sellerName;
 		private double price;
@@ -51,14 +52,19 @@ public class ECommerceSystem {
 			this.stock = stock;
 		}
 
-		public String toString() {
-			return sellerName + " " + price + " " + stock;
+		public String toString(){
+			StringBuilder strb = new StringBuilder();
+			strb.append(sellerName).append(" ")
+					.append(price).append(" ")
+					.append(stock);
+
+			return strb.toString();
 		}
 
-		public int compareTo(Object o) {
-			if (!(o instanceof Product)) throw new IllegalArgumentException();
-			if (((Product) o).price < price) return 1;
-			if (((Product) o).price == price) return 0;
+		@Override
+		public int compareTo(Product o){
+			if (o.price < price) return 1;
+			if (o.price == price) return 0;
 			else return -1;
 		}
 
@@ -291,46 +297,59 @@ public class ECommerceSystem {
 					productList.add(getProduct(productName, username));
 
 				// The list of waiting orders
-				buffer = reader.nextLine();
-				String[] orders = buffer.split("\\|");
-				for (String orderString : orders)
-					waitingOrders.add(new Order(orderString));
+				if (reader.hasNext()){
+					buffer = reader.nextLine();
+					String[] orders = buffer.split("\\|");
+					for (String orderString : orders)
+						waitingOrders.add(new Order(orderString));
+				}
 
 				// The list of past orders
-				buffer = reader.nextLine();
-				orders = buffer.split("\\|");
-				for (String orderString : orders)
-					waitingOrders.add(new Order(orderString));
+				if (reader.hasNext()) {
+					buffer = reader.nextLine();
+					String[] orders = buffer.split("\\|");
+					for (String orderString : orders)
+						orderHistory.add(new Order(orderString));
+				}
 			}
 		}
 
-		@Override
-		public void UI() {
-			int inputInt = 0;
-			String inputStr = null;
-			Scanner scan = new Scanner(System.in);
-			System.out.print("Welcome to the seller menu\n");
+	    @Override
+	    public void UI() {
+	        int inputInt = 0;
+	        String inputStr = null;
+	        Scanner scan = new Scanner(System.in);
+	        System.out.print("Welcome to the seller menu\n");
 
-			while (true) {
-				System.out.print("Enter the number of an action:\n1- Order management.\n2- Add a new product.\n3- Statistics.\n0- Log out.\n");
+	        while(true){
+	            System.out.print("Enter the number of an action:\n1- Order management.\n2- Add a new product.\n3- Statistics.\n0- Log out.\n");
 
-				try {
-					inputInt = scan.nextInt();
-					scan.nextLine();
-					if (inputInt == 1) {
-						if (!waitingOrders.isEmpty()) {
-							System.out.print("Oldest order:\n");
-							System.out.print(waitingOrders.peek());
-							System.out.print("Do you want to confirm the order?\n(Answer with yes or no)\n");
-							inputStr = scan.next();
-							if (inputStr.equals("yes")) waitingOrders.peek().process();
-						} else System.out.print("There are no waiting orders.\n");
-					} else if (inputInt == 2 || inputInt == 3) System.out.print("To Be Implemented\n");
-					else if (inputInt == 0) {
+	            try{
+	            	inputInt = scan.nextInt();
+		            scan.nextLine();
+		            if (inputInt == 1){
+		            	if (!waitingOrders.isEmpty()) {
+				            System.out.print("Oldest order:\n");
+				            System.out.print(waitingOrders.peek());
+				            System.out.print("\nDo you want to confirm the order?\n(Answer with yes or no)\n");
+				            inputStr = scan.next();
+				            if(inputStr.equals("yes")) {
+								waitingOrders.peek().process();
+								orderHistory.add(waitingOrders.peek());
+								waitingOrders.poll();
+							}
+				        }
+				        else System.out.print("There are no waiting orders.\n");
+		            }
+		            else if (inputInt == 2 || inputInt == 3) System.out.print("To Be Implemented\n");
+		            else if (inputInt == 0) {
+						saveToFile();
 						System.out.println("GOOD-BYE!");
 						break;
-					} else System.out.println("Invalid choice, please try again.");
-				} catch (InputMismatchException e) {
+					}
+		            else System.out.println("Invalid choice, please try again.");
+	            }
+	            catch (InputMismatchException e){
 					scan.nextLine();
 					System.out.printf("Error: %s\n", e);
 					e.printStackTrace();
@@ -346,7 +365,9 @@ public class ECommerceSystem {
 			file.write(username + "\n");
 
 			for (Product product : productList)
-				file.write(product.getProductName());
+				file.write(product.getProductName() + " ");
+
+			file.write("\n");
 
 			for (Order order : waitingOrders)
 				file.write(order + "|");
@@ -355,8 +376,6 @@ public class ECommerceSystem {
 
 			for (Order order : orderHistory)
 				file.write(order + "|");
-
-			file.write("\n");
 
 			file.close();
 		}
