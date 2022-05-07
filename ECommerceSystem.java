@@ -87,7 +87,7 @@ public class ECommerceSystem {
 
 	}
 
-	public class Customer extends User {
+	private class Customer extends User {
 
 		public Customer(String usernameValue, String passwordValue) {
 			super(usernameValue, passwordValue);
@@ -186,7 +186,7 @@ public class ECommerceSystem {
 		}
 	}
 
-	public class Seller extends User {
+	private class Seller extends User {
 		private LinkedList<Order> orderHistory;
 		private Queue<Order> waitingOrders;
 		private LinkedList<Product> productList;
