@@ -4,6 +4,7 @@ import java.util.*;
 import java.io.*;
 import java.lang.System;
 import java.util.function.BiConsumer;
+import MainSystem.sourcepackage.*;
 
 @SuppressWarnings("unchecked")
 public class ECommerceSystem{
@@ -12,10 +13,28 @@ public class ECommerceSystem{
 	private Map<String, String> Admins = new HashMap<>();
 	private Map<String, LinkedList<Product>> products = new TreeMap();
 	private PriorityQueue<Request> Requests = new PriorityQueue();
+	private ArrayList<BinarySearchTree<Product>> productsOrdered = new ArrayList();
 
-	protected static class Product{
-		private final String productName;
-		private final String sellerName;
+	private void createBST(){
+		for (Map.Entry<String, LinkedList<Product>> entry : products.entrySet()){
+			productsOrdered.add(new BinarySearchTree());
+			LinkedList<Product> temp = entry.getValue();
+			Iterator<Product> iter = temp.iterator();
+			while (iter.hasNext()) productsOrdered.get(productsOrdered.size()-1).add(iter.next().clone());
+		}
+	}
+
+	private Product getProduct(String productName, String seller) {
+		LinkedList<Product> targetList = products.get(productName);
+		for(Product temp : targetList)
+			if(temp.productName.equals(productName)) return temp;
+
+		return null;
+	}
+
+	private class Product implements Comparable, Cloneable{
+		private String productName;
+		private String sellerName;
 		private double price;
 		private int stock;
 
@@ -26,35 +45,239 @@ public class ECommerceSystem{
 			this.stock = stock;
 		}
 
-		public int getStock() {
-			return stock;
-		}
-
-		public double getPrice() {
-			return price;
-		}
-
-		public String getProductName() {
-			return productName;
-		}
-
-		public String getSellerName() {
-			return sellerName;
-		}
-
-		public void setStock(int stock) {
-			this.stock = stock;
-		}
-
-		public void setPrice(double price) {
-			this.price = price;
-		}
-
 		public String toString(){
 			return sellerName + " " + price + " " + stock;
 		}
+
+		public int compareTo(Object o){
+			if (!(o instanceof Product)) throw new IllegalArgumentException();
+			if (((Product)o).price < price) return 1;
+			if (((Product)o).price == price) return 0;
+			else return -1;
+		}
+
+		public String getProductName(){
+			return productName;
+		}
+
+		public int getStock(){
+			return stock;
+		}
+
+		public void setStock(int stock){
+			this.stock = stock;
+		}
+
+		public Product clone() {
+			try{
+				Product copy = (Product) super.clone();
+				//gives me the Product object which is shallow copied
+				return copy;
+			}
+			catch (CloneNotSupportedException e){
+				//this will never happen
+				return null;
+			}
+		}
+
 	}
-	
+
+	private class Seller extends User {
+		private class Order {
+			private final int ID;
+			private Map<Product, Integer> orderedProducts;
+
+			private static int lastID = 0;
+
+			public Order() {
+				orderedProducts = new HashMap<>();
+				ID = ++lastID;
+			}
+
+			public Order(String orderString) {
+				orderedProducts = new HashMap<>();
+
+				String[] temp = orderString.split(":");
+				ID = Integer.parseInt(temp[0]);
+				temp = temp[1].split(" ");
+
+				String[] product_stock;
+				for (String product : temp) {
+					product_stock = product.split(",");
+					orderedProducts.put(getProduct(product_stock[0], username),
+							Integer.parseInt(product_stock[1]));
+				}
+			}
+
+			public Order(Map<Product, Integer> orderedProducts) {
+				this.orderedProducts = orderedProducts;
+				ID = ++lastID;
+			}
+
+			public void add(Product product, int quantity) {
+				orderedProducts.put(product, quantity);
+				product.setStock(product.getStock() - quantity);
+			}
+
+			public Integer remove(Product product){
+				return orderedProducts.remove(product);
+			}
+
+			public List<Product> process() {
+				List<Product> outOfStock = new LinkedList<>();
+
+				BiConsumer<Product, Integer> processor = new BiConsumer<Product, Integer>() {
+					@Override
+					public void accept(Product product, Integer numOfUnits) {
+						if(product.getStock() < numOfUnits)
+							outOfStock.add(product);
+
+						else
+							product.setStock(product.getStock() - numOfUnits);
+					}
+				};
+
+				orderedProducts.forEach(processor);
+
+				if(outOfStock.isEmpty())
+					return null;
+				else
+					return outOfStock;
+			}
+
+			@Override
+			public String toString() {
+				StringBuilder strb = new StringBuilder();
+				strb.append(ID).append(":");
+
+				for (Map.Entry<Product, Integer> entry : orderedProducts.entrySet())
+					strb.append(entry.getKey().getProductName())
+							.append(",")
+							.append(entry.getValue())
+							.append(" ");
+
+				return strb.toString();
+			}
+		}
+
+		private LinkedList<Order> orderHistory;
+		private Queue<Order> waitingOrders;
+		private LinkedList<Product> productList;
+
+	/*
+		yeni ürün eklenmesi için talep oluştur
+		sattığı ürünlerin listesi
+		sipariş verilenler
+		ürün istatistiği --> her üründen kaç tane sattığı --> inner class olabilir
+
+		UI implementasyonu
+	*/
+
+		public Seller(String username, String password)
+				throws FileNotFoundException {
+			super(username, password);
+
+			orderHistory = new LinkedList<>();
+			waitingOrders = new LinkedList<>();
+			productList = new LinkedList<>();
+
+			File file = new File(username + ".txt");
+			if(file.exists()){
+				Scanner reader = new Scanner(file);
+				String buffer = reader.nextLine();
+				Product targetProduct;
+
+				// Check that the file is not corrupted
+				// Each file must start with the name of the seller
+				if(!buffer.contains(username)){
+					file.renameTo(new File(username + "_damaged.txt"));
+					throw new FileNotFoundException("The file found was damaged");
+				}
+
+				// The list of products
+				buffer = reader.nextLine();
+				String[] products = buffer.split(" ");
+				for(String productName : products)
+					productList.add(getProduct(productName, username));
+
+				// The list of waiting orders
+				buffer = reader.nextLine();
+				String[] orders = buffer.split("\\|");
+				for (String orderString : orders)
+					waitingOrders.add(new Order(orderString));
+
+				// The list of past orders
+				buffer = reader.nextLine();
+				orders = buffer.split("\\|");
+				for (String orderString : orders)
+					waitingOrders.add(new Order(orderString));
+			}
+		}
+
+		@Override
+		public void UI() {
+			int inputInt = 0;
+			String inputStr = null;
+			Scanner scan = new Scanner(System.in);
+			System.out.print("Welcome to the seller menu\n");
+
+			while(true){
+				System.out.print("Enter the number of an action:\n1- Order management.\n2- Add a new product.\n3- Statistics.\n0- Log out.\n");
+
+				try{
+					inputInt = scan.nextInt();
+					scan.nextLine();
+					if (inputInt == 1){
+						if (!waitingOrders.isEmpty()) {
+							System.out.print("Oldest order:\n");
+							System.out.print(waitingOrders.peek());
+							System.out.print("Do you want to confirm the order?\n(Answer with yes or no)\n");
+							inputStr = scan.next();
+							if(inputStr.equals("yes")) waitingOrders.peek().process();
+						}
+						else System.out.print("There are no waiting orders.\n");
+					}
+					else if (inputInt == 2 || inputInt == 3) System.out.print("To Be Implemented\n");
+					else if (inputInt == 0) {System.out.println("GOOD-BYE!"); break;}
+					else System.out.println("Invalid choice, please try again.");
+				}
+				catch (InputMismatchException e){
+					scan.nextLine();
+					System.out.printf("Error: %s\n", e);
+					e.printStackTrace();
+				}
+				catch (Exception e){
+					System.out.printf("Error: %s\n", e);
+					e.printStackTrace();
+				}
+			}
+		}
+
+		public void addOrder (Map<Product, Integer> orderedProducts) {
+			waitingOrders.add(new Order(orderedProducts));
+		}
+
+		public void saveToFile() throws IOException {
+			FileWriter file = new FileWriter(username + ".txt", false);
+			file.write(username + "\n");
+
+			for (Product product : productList)
+				file.write(product.getProductName());
+
+			for (Order order : waitingOrders)
+				file.write(order + "|");
+
+			file.write("\n");
+
+			for (Order order : orderHistory)
+				file.write(order + "|");
+
+			file.write("\n");
+
+			file.close();
+		}
+	}
+
 	private class Admin extends User{
 		public Admin(String usernameValue, String passwordValue){
 			super(usernameValue, passwordValue);
@@ -77,6 +300,7 @@ public class ECommerceSystem{
 
 					if (choice == 0){
 						System.out.printf("Goodbye %s!\n", username);
+						System.out.printf("%s!\n", productsOrdered);
 						flag = false;
 					}
 					else if (choice == 1){
@@ -146,169 +370,24 @@ public class ECommerceSystem{
 		}
 	}
 
-	public class Seller extends User {
-		private class Order {
-			private String customerName;
-			private final int ID;
-			private Map<Product, Integer> productList;
+	private class Customer extends User {
 
-			private static int lastID = 0;
-
-			public Order() {
-				productList = new HashMap<>();
-				ID = ++lastID;
-			}
-
-			public Order(String orderString) {
-				productList = new HashMap<>();
-
-				String[] temp = orderString.split(" ");
-				ID = Integer.parseInt(temp[0]);
-				temp = Arrays.copyOfRange(temp, 1, temp.length);
-
-				String[] product_stock;
-				for (String product : temp) {
-					product_stock = product.split(",");
-					productList.put(getProduct(product_stock[0], username),
-									Integer.parseInt(product_stock[1]));
-				}
-			}
-
-			public void add(Product product, int quantity) {
-				productList.put(product, quantity);
-				product.setStock(product.getStock() - quantity);
-			}
-
-			public Integer remove(Product product){
-				return productList.remove(product);
-			}
-
-			public List<Product> process() {
-				List<Product> outOfStock = new LinkedList<>();
-
-				BiConsumer<Product, Integer> processor = new BiConsumer<Product, Integer>() {
-					@Override
-					public void accept(Product product, Integer numOfUnits) {
-						if(product.getStock() < numOfUnits)
-							outOfStock.add(product);
-
-						else
-							product.setStock(product.getStock() - numOfUnits);
-					}
-				};
-
-				productList.forEach(processor);
-
-				if(outOfStock.isEmpty())
-					return null;
-				else
-					return outOfStock;
-			}
-
-			@Override
-			public String toString() {
-				return "Order{" +
-						"customerName='" + customerName + '\'' +
-						", ID=" + ID +
-						", productList=" + productList +
-						'}';
-			}
-		}
-
-		private LinkedList<Order> orderHistory;
-		private Queue<Order> waitingOrders;
-		private LinkedList<Product> productList;
-
-	/*
-		yeni ürün eklenmesi için talep oluştur
-		sattığı ürünlerin listesi
-		sipariş verilenler
-		ürün istatistiği --> her üründen kaç tane sattığı --> inner class olabilir
-
-		UI implementasyonu
-	*/
-
-		public Seller(String username, String password)
-				throws FileNotFoundException {
-			super(username, password);
-
-			orderHistory = new LinkedList<>();
-			waitingOrders = new LinkedList<>();
-			productList = new LinkedList<>();
-
-			File file = new File(username + ".txt");
-			if(file.exists()){
-				Scanner reader = new Scanner(file);
-				String buffer = reader.nextLine();
-				Product targetProduct;
-
-				// Check that the file is not corrupted
-				// Each file must start with the name of the seller
-				if(!buffer.contains(username)){
-					file.renameTo(new File(username + "_damaged.txt"));
-					throw new FileNotFoundException("The file found was damaged");
-				}
-
-				// The list of products
-				buffer = reader.nextLine();
-				String[] products = buffer.split(" ");
-				for(String productName : products)
-					productList.add(getProduct(productName, username));
-
-				// The list of waiting orders
-				buffer = reader.nextLine();
-				String[] orders = buffer.split("\\|");
-				for (String orderString : orders)
-					waitingOrders.add(new Order(orderString));
-
-				// The list of past orders
-				buffer = reader.nextLine();
-				orders = buffer.split("\\|");
-				for (String orderString : orders)
-					waitingOrders.add(new Order(orderString));
-			}
+		public Customer(String usernameValue, String passwordValue) {
+			super(usernameValue, passwordValue);
 		}
 
 		@Override
 		public void UI() {
-			int inputInt = 0;
-			String inputStr = null;
-			Scanner scan = new Scanner(System.in);
-			System.out.print("Welcome to the seller menu\n");
 
-			while(true){
-				System.out.print("Enter the number of an action:\n1- Order management.\n2- Add a new product.\n3- Statistics.\n0- Log out.\n");
-
-				inputInt = scan.nextInt();
-				switch (inputInt) {
-					case 1: if (!waitingOrders.isEmpty()) {
-						System.out.print("Oldest order:\n");
-						System.out.print(waitingOrders.peek());
-						System.out.print("Do you want to confirm the order?\n(Answer with yes or no)\n");
-						inputStr = scan.next();
-						if(inputStr.equals("yes"))
-							waitingOrders.peek().process();
-					}
-					else
-						System.out.print("There are no waiting orders.\n");
-
-					break;
-
-					case 2: case 3:
-						System.out.print("To Be Implemented\n");
-						break;
-
-					case 0: break;
-				}
-			}
 		}
 	}
-	
-	private abstract class Request implements Comparable<Request>{
+
+	private abstract class Request implements Comparable{
 		protected int priority;
 
-		public int compareTo(Request o){
-			return priority - o.priority;
+		public int compareTo(Object o){
+			if (!(o instanceof Request)) throw new IllegalArgumentException();
+			return priority - ((Request)o).priority;
 		}
 	}
 
@@ -346,7 +425,7 @@ public class ECommerceSystem{
 				String temp = reader.nextLine();
 				String[] lineWords = temp.trim().split("\\s+");
 				products.put(lineWords[0], new LinkedList());
-				for (int i = 1; i < lineWords.length; i+=3) products.get(lineWords[0]).add(new Product(lineWords[0], lineWords[i], Double.parseDouble(lineWords[i + 1]), Integer.parseInt(lineWords[i + 2])));
+				for (int i = 1; i < lineWords.length; i+=3) products.get(lineWords[0]).add(new Product(lineWords[0], lineWords[i], Double.parseDouble(lineWords[i+1]), Integer.parseInt(lineWords[i+2])));
 			}
 			reader.close();
 
@@ -373,6 +452,8 @@ public class ECommerceSystem{
 				if (priority == 0) Requests.add(new SellerRequest(new Seller(reader.next(), reader.next())));
 				else Requests.add(new ProductRequest(reader.next()));
 			}
+
+			createBST();
 		}
 		catch (Exception e){
 			System.out.println("Error during opening the file.");
@@ -450,7 +531,7 @@ public class ECommerceSystem{
 									saveRequests();
 									logInFlag = false;
 								}
-								else System.out.println("Invalid username or password!");	
+								else System.out.println("Invalid username or password!");
 							}
 							else System.out.println("Invalid choice, please try again.");
 						}
@@ -516,17 +597,17 @@ public class ECommerceSystem{
 				scan.nextLine();
 				System.out.printf("Error: %s\n", e);
 				e.printStackTrace();
-			} 
+			}
 		}while(flag);
 	}
 
 	private void addProduct(String productName){
-		if (!products.containsKey(productName)) products.put(productName, new LinkedList());
+		if (!products.containsKey(productName)){ products.put(productName, new LinkedList()); createBST();}
 		else System.out.println("This product already exists.");
 	}
 
 	private void removeProduct(String productName){
-		if (products.containsKey(productName)) products.remove(productName);
+		if (products.containsKey(productName)){ products.remove(productName); createBST();}
 		else System.out.println("This product doesn't exist.");
 	}
 
@@ -617,14 +698,5 @@ public class ECommerceSystem{
 		saveCustomers();
 		saveSellers();
 		saveRequests();
-	}
-
-	private Product getProduct(String productName, String seller) {
-		LinkedList<Product> targetList = products.get(productName);
-		for(Product temp : targetList)
-			if(temp.productName.equals(productName))
-				return temp;
-
-		return null;
 	}
 }
