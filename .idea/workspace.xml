@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="573025df-0264-44d1-a224-5c1f8cad9b23" name="Changes" comment="Updating the input files for the seller">
+    <list default="true" id="573025df-0264-44d1-a224-5c1f8cad9b23" name="Changes" comment="Fixing some file saving issues">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Customers.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Customers.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ECommerceSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/ECommerceSystem.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Products.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Products.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Sellers.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Sellers.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ikbal.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ikbal.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +75,7 @@
       <workItem from="1651918682015" duration="3609000" />
       <workItem from="1651922882482" duration="4025000" />
       <workItem from="1651951359502" duration="56000" />
-      <workItem from="1651951452297" duration="1146000" />
+      <workItem from="1651951452297" duration="8173000" />
     </task>
     <task id="LOCAL-00001" summary="Updating the input files for the seller">
       <created>1651951663505</created>
@@ -87,7 +84,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651951663505</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Fixing some file saving issues">
+      <created>1651952632952</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1651952632952</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -106,25 +110,16 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Updating the input files for the seller" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updating the input files for the seller" />
+    <MESSAGE value="Fixing some file saving issues" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixing some file saving issues" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/ECommerceSystem.java</url>
-          <line>184</line>
+          <line>183</line>
           <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/ECommerceSystem.java</url>
-          <line>768</line>
-          <option name="timeStamp" value="12" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/ECommerceSystem.java</url>
-          <line>690</line>
-          <option name="timeStamp" value="15" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

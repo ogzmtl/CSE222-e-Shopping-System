@@ -39,7 +39,6 @@ public class ECommerceSystem {
 
 	}
 
-
 	private class Product implements Comparable<Product>, Cloneable {
 		private String productName;
 		private String sellerName;
@@ -275,7 +274,7 @@ public class ECommerceSystem {
 			super(username, password);
 
 			orderHistory = new LinkedList<>();
-			waitingOrders = new LinkedList<>();
+			waitingOrders = new ArrayDeque<>();
 			productList = new LinkedList<>();
 
 			File file = new File(username + ".txt");
@@ -294,8 +293,9 @@ public class ECommerceSystem {
 				// The list of products
 				buffer = reader.nextLine();
 				String[] products = buffer.split(" ");
-				for (String productName : products)
-					productList.add(getProduct(productName, username));
+				for (String productName : products) {
+					productList.addFirst(getProduct(productName, username));
+				}
 
 				// The list of waiting orders
 				if (reader.hasNext()){
@@ -310,7 +310,7 @@ public class ECommerceSystem {
 					buffer = reader.nextLine();
 					String[] orders = buffer.split("\\|");
 					for (String orderString : orders)
-						orderHistory.add(new Order(orderString));
+						orderHistory.addFirst(new Order(orderString));
 				}
 			}
 		}

@@ -3,7 +3,7 @@ Chess
 Flower 
 Guitar ikbal 100.2 10 
 Headphone ikbal 15.2 5 
-Laptop ikbal 10.0 8 oguz 15.0 2 mert 12.0 3 
+Laptop ikbal 10.0 7 oguz 15.0 2 mert 12.0 3 
 Phone 
 Piano 
 T-shirt 
