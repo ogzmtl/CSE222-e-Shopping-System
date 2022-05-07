@@ -559,6 +559,7 @@ public class ECommerceSystem {
 
 				if (choice == 0) {
 					System.out.println("\nGOOD-BYE!");
+					exit();
 					flag = false;
 				} else if (choice == 1) {
 					boolean logInFlag = true;
@@ -581,7 +582,6 @@ public class ECommerceSystem {
 								if (Admins.containsKey(usernameValue) && Admins.get(usernameValue).equals(passwordValue)) {
 									Admin newAdmin = new Admin(usernameValue, passwordValue);
 									newAdmin.UI();
-									exit();
 									logInFlag = false;
 								} else System.out.println("Invalid username or password!");
 							} else if (choice == 2) {
