@@ -2,23 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="573025df-0264-44d1-a224-5c1f8cad9b23" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/CSE222-e-Shopping-System.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/CSE222-e-Shopping-System.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CSE222-e-Shopping-System.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MainSystem/Admins.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Admins.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MainSystem/Customers.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Customers.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MainSystem/ECommerceSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ECommerceSystem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MainSystem/Products.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Products.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MainSystem/Requests.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Requests.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MainSystem/Sellers.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/Sellers.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MainSystem/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MainSystem/sourcepackage/BinarySearchTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sourcepackage/BinarySearchTree.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MainSystem/sourcepackage/BinaryTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sourcepackage/BinaryTree.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MainSystem/sourcepackage/HashtableChain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sourcepackage/HashtableChain.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MainSystem/sourcepackage/SearchTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/sourcepackage/SearchTree.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/MainSystem/test.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/test.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CSE222-e-Shopping-System.iml" beforeDir="false" afterPath="$PROJECT_DIR$/CSE222-e-Shopping-System.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ECommerceSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/ECommerceSystem.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,6 +43,8 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu-20.04\home\enesabdk\School Projects\Java\2.Year\2.Semester\Semester Project\CSE222-e-Shopping-System" />
+      <recent name="\\wsl$\Ubuntu-20.04\home\enesabdk\School Projects\Java\2.Year\2.Semester\Semester Project\CSE222-e-Shopping-System\Sellers" />
       <recent name="\\wsl$\Ubuntu-20.04\home\enesabdk\School Projects\Java\2.Year\2.Semester\Semester Project\CSE222-e-Shopping-System\src" />
       <recent name="\\wsl$\Ubuntu-20.04\home\enesabdk\School Projects\Java\2.Year\2.Semester\Semester Project\CSE222-e-Shopping-System\src\ressources" />
     </key>
@@ -85,7 +73,7 @@
       <option name="presentableId" value="Default" />
       <updated>1651918663004</updated>
       <workItem from="1651918682015" duration="3609000" />
-      <workItem from="1651922882482" duration="2368000" />
+      <workItem from="1651922882482" duration="4025000" />
     </task>
     <servers />
   </component>
@@ -102,5 +90,21 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/ECommerceSystem.java</url>
+          <line>202</line>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/ECommerceSystem.java</url>
+          <line>182</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

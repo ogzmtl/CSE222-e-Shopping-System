@@ -80,7 +80,7 @@ public class ECommerceSystem{
 
 	}
 
-	public class Seller extends User {
+	private class Seller extends User {
 		private LinkedList<Order> orderHistory;
 		private Queue<Order> waitingOrders;
 		private LinkedList<Product> productList;
