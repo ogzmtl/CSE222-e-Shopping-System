@@ -15,6 +15,7 @@ public class ECommerceSystem {
 	private ArrayList<BinarySearchTree<Product>> productsOrdered = new ArrayList();
 
 	private void createBST() {
+		productsOrdered = new ArrayList();
 		for (Map.Entry<String, LinkedList<Product>> entry : products.entrySet()) {
 			productsOrdered.add(new BinarySearchTree());
 			LinkedList<Product> temp = entry.getValue();
@@ -403,7 +404,6 @@ public class ECommerceSystem {
 
 					if (choice == 0) {
 						System.out.printf("Goodbye %s!\n", username);
-						System.out.printf("%s!\n", productsOrdered);
 						flag = false;
 					} else if (choice == 1) {
 						if (Requests.size() == 0) System.out.println("There is no pending request.");
