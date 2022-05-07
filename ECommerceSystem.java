@@ -149,7 +149,11 @@ public class ECommerceSystem {
 				} else if (input == 2) {
 					System.out.println("In Progress");
 					//displayBalance()
-				} else {
+				}
+				else if(input == 0){
+					System.out.println("GoodBye!!!");
+				}
+				else {
 					try {
 						throw new Exception();
 					} catch (Exception e) {
