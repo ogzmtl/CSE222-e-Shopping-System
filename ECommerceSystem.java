@@ -90,7 +90,6 @@ public class ECommerceSystem {
 				return null;
 			}
 		}
-
 	}
 
 	private class Customer extends User {
@@ -124,7 +123,6 @@ public class ECommerceSystem {
 				else
 					setBalance(this.balance - paymentAmount);
 			}
-
 		}
 
 		@Override
@@ -224,7 +222,8 @@ public class ECommerceSystem {
 			}
 
 			public Order(Map<Product, Integer> orderedProducts) {
-				this.orderedProducts = orderedProducts;
+				this.orderedProducts = new HashMap<>();
+				this.orderedProducts.putAll(orderedProducts);
 				ID = ++lastID;
 			}
 
@@ -472,12 +471,11 @@ public class ECommerceSystem {
 		}
 	}
 
-	private abstract class Request implements Comparable {
+	private abstract class Request implements Comparable<Request> {
 		protected int priority;
 
-		public int compareTo(Object o) {
-			if (!(o instanceof Request)) throw new IllegalArgumentException();
-			return priority - ((Request) o).priority;
+		public int compareTo(Request o) {
+			return priority - o.priority;
 		}
 	}
 
