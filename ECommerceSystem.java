@@ -199,7 +199,7 @@ public class ECommerceSystem {
 			private final int ID;
 			private Map<Product, Integer> orderedProducts;
 
-			private int lastID = 0;
+			private static int lastID = 0;
 
 			public Order() {
 				orderedProducts = new HashMap<>();
@@ -219,6 +219,8 @@ public class ECommerceSystem {
 					orderedProducts.put(getProduct(product_stock[0], username),
 							Integer.parseInt(product_stock[1]));
 				}
+
+				lastID = ID;
 			}
 
 			public Order(Map<Product, Integer> orderedProducts) {
