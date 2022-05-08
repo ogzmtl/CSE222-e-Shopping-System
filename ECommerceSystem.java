@@ -135,6 +135,10 @@ public class ECommerceSystem {
 				input = inp.nextInt();
 
 				if (input == 1) {
+					for (BinarySearchTree<Product> temp : productsOrdered)
+						if(temp.getData() != null)
+							System.out.println(temp.getData().productName);
+
 					System.out.println("Enter product name :");
 					Scanner input1 = new Scanner(System.in);
 					productName = input1.nextLine();
@@ -185,7 +189,10 @@ public class ECommerceSystem {
 				}
 			} else if (flag == 2) { // display product by price ascending
 				System.out.println("In progress");
-				System.out.println(productsOrdered);
+				for (BinarySearchTree<Product> temp2 : productsOrdered)
+					if (temp2.getData() != null &&
+						temp2.getData().productName.equals(productName))
+						System.out.println(temp2);
 			}
 		}
 	}
