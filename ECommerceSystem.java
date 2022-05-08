@@ -304,14 +304,15 @@ public class ECommerceSystem {
 				}
 
 				// The list of products
-				buffer = reader.nextLine();
-				String[] products = buffer.split(" ");
-				for (String productName : products) {
-					productList.addFirst(getProduct(productName, username));
+				if (reader.hasNext()){
+					buffer = reader.nextLine();
+					String[] products = buffer.split(" ");
+					for (String productName : products)
+						productList.addFirst(getProduct(productName, username));
 				}
 
 				// The list of waiting orders
-				if (reader.hasNext()){
+				if (reader.hasNext()) {
 					buffer = reader.nextLine();
 					String[] orders = buffer.split("\\|");
 					for (String orderString : orders)
@@ -375,7 +376,7 @@ public class ECommerceSystem {
 		}
 
 		public void saveToFile() throws IOException {
-			FileWriter file = new FileWriter(username + ".txt", false);
+			FileWriter file = new FileWriter(username + ".txt");
 			file.write(username + "\n");
 
 			for (Product product : productList)

@@ -1,4 +1,5 @@
 Cactus 
+Camera 
 Chess 
 Flower 
 Guitar ikbal 100.2 10 
