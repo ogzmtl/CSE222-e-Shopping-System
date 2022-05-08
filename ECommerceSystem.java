@@ -223,6 +223,11 @@ public class ECommerceSystem {
 				}
 			}
 
+			public Order(Map<Product, Integer> orderedProducts) {
+				this.orderedProducts = orderedProducts;
+				ID = ++lastID;
+			}
+
 			public void add(Product product, int quantity) {
 				orderedProducts.put(product, quantity);
 				product.setStock(product.getStock() - quantity);
@@ -233,13 +238,13 @@ public class ECommerceSystem {
 			}
 
 			public List<Product> process() {
-				List<Product> outOfStock = new LinkedList<>();
+				LinkedList<Product> outOfStock = new LinkedList<>();
 
 				BiConsumer<Product, Integer> processor = new BiConsumer<Product, Integer>() {
 					@Override
 					public void accept(Product product, Integer numOfUnits) {
 						if (product.getStock() < numOfUnits)
-							outOfStock.add(product);
+							outOfStock.addFirst(product);
 
 						else
 							product.setStock(product.getStock() - numOfUnits);
@@ -379,6 +384,10 @@ public class ECommerceSystem {
 				file.write(order + "|");
 
 			file.close();
+		}
+
+		public void addOrder (Map<Product, Integer> orderProducts) {
+			waitingOrders.add(new Order(orderProducts));
 		}
 	}
 
