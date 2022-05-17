@@ -1,12 +1,10 @@
 package main.java;
 
-import java.net.URI;
-import java.net.URL;
 import java.util.*;
 import java.io.*;
 import java.lang.System;
 
-import sourcepackage.*;
+import main.DataStructures.Trees.BinarySearchTree;
 
 @SuppressWarnings("unchecked")
 public class ECommerceSystem {

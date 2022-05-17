@@ -1,6 +1,6 @@
 package main.java;
 
-import sourcepackage.BinarySearchTree;
+import main.DataStructures.Trees.BinarySearchTree;
 import main.java.ECommerceSystem.*;
 
 import java.util.ArrayList;

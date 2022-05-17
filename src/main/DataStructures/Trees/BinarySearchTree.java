@@ -1,4 +1,4 @@
-package sourcepackage;
+package main.DataStructures.Trees;
 @SuppressWarnings("unchecked")
 public class BinarySearchTree<E> extends BinaryTree<E> implements SearchTree<E>{
 	protected boolean adder;
