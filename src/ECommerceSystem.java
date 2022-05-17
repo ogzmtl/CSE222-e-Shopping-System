@@ -14,6 +14,35 @@ public class ECommerceSystem {
 	private PriorityQueue<Request> Requests = new PriorityQueue();
 	private ArrayList<BinarySearchTree<Product>> productsOrdered = new ArrayList();
 
+	public abstract class User{
+		//protected String userID;
+		protected String username;
+		protected String password;
+
+		public User(String usernameValue, String passwordValue){
+			username = usernameValue;
+			password = passwordValue;
+		}
+
+		public abstract void UI();
+
+		protected Product getProduct(String productName, String seller) {
+			LinkedList<Product> targetList = products.get(productName);
+			if(targetList != null)
+				for(Product temp : targetList)
+					if(temp.sellerName.equals(seller)) return temp;
+
+			return null;
+		}
+
+		protected LinkedList<Product> getProduct(String productName) {
+			LinkedList<Product> targetList = products.get(productName);
+			return targetList;
+		}
+
+		//şifre yenileme
+	}
+
 	private void createBST() {
 		productsOrdered = new ArrayList();
 		for (Map.Entry<String, LinkedList<Product>> entry : products.entrySet()) {
@@ -22,21 +51,6 @@ public class ECommerceSystem {
 			Iterator<Product> iter = temp.iterator();
 			while (iter.hasNext()) productsOrdered.get(productsOrdered.size() - 1).add(iter.next().clone());
 		}
-	}
-
-	private Product getProduct(String productName, String seller) {
-		LinkedList<Product> targetList = products.get(productName);
-		if(targetList != null)
-			for(Product temp : targetList)
-				if(temp.sellerName.equals(seller)) return temp;
-
-		return null;
-	}
-
-	private LinkedList<Product> getProduct(String productName) {
-		LinkedList<Product> targetList = products.get(productName);
-		return targetList;
-
 	}
 
 	private class Product implements Comparable<Product>, Cloneable {
