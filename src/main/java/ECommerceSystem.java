@@ -3,6 +3,7 @@ package main.java;
 import java.util.*;
 import java.io.*;
 import java.lang.System;
+import java.util.function.BiConsumer;
 
 import main.DataStructures.Trees.BinarySearchTree;
 
@@ -40,8 +41,24 @@ public class ECommerceSystem {
 		}
 
 		protected LinkedList<Product> getProduct(String productName) {
-			LinkedList<Product> targetList = systemRef.products.get(productName);
-			return targetList;
+			return systemRef.products.get(productName);
+		}
+
+		public static boolean isInteger(String str) {
+			if (str == null) {
+				return false;
+			}
+			int length = str.length();
+			if (length == 0) {
+				return false;
+			}
+			for (int i = 0; i < length; i++) {
+				char c = str.charAt(i);
+				if (c < '0' || c > '9') {
+					return false;
+				}
+			}
+			return true;
 		}
 
 		protected ArrayList<BinarySearchTree<Product>> getProducts() {
@@ -51,6 +68,104 @@ public class ECommerceSystem {
 		protected void changePass (String newPass) {
 			password = newPass;
 		}
+
+		protected int getInputInt(Scanner scan, String message) {
+			System.out.print(message);
+			try {
+				return scan.nextInt();
+			} catch (Exception e) {
+				scan.nextLine();
+				System.out.print("\033[1A\r\033[JInvalid Input\n");
+				while (true) {
+					try {
+						return scan.nextInt();
+					} catch (Exception e2) {
+						scan.nextLine();
+						System.out.print("\033[2A\r\033[JInvalid Input\n");
+					}
+				}
+			}
+		}
+
+		protected class Order {
+			private final int ID;
+			private Map<ECommerceSystem.Product, Integer> orderedProducts;
+
+			private static int lastID = 0;
+
+			public Order() {
+				orderedProducts = new HashMap<>();
+				ID = ++lastID;
+			}
+
+			public Order(String orderString) {
+				orderedProducts = new HashMap<>();
+
+				String[] temp = orderString.split(":");
+				ID = Integer.parseInt(temp[0]);
+				temp = temp[1].split(" ");
+
+				String[] product_stock;
+				for (String product : temp) {
+					product_stock = product.split(",");
+					orderedProducts.put(getProduct(product_stock[0], username),
+							Integer.parseInt(product_stock[1]));
+				}
+
+				lastID = ID;
+			}
+
+			public Order(Map<ECommerceSystem.Product, Integer> orderedProducts) {
+				this.orderedProducts = new HashMap<>();
+				this.orderedProducts.putAll(orderedProducts);
+				ID = ++lastID;
+			}
+
+			public void add(ECommerceSystem.Product product, int quantity) {
+				orderedProducts.put(product, quantity);
+				product.setStock(product.getStock() - quantity);
+			}
+
+			public Integer remove(ECommerceSystem.Product product) {
+				return orderedProducts.remove(product);
+			}
+
+			public List<ECommerceSystem.Product> process() {
+				LinkedList<ECommerceSystem.Product> outOfStock = new LinkedList<>();
+
+				BiConsumer<Product, Integer> processor = new BiConsumer<ECommerceSystem.Product, Integer>() {
+					@Override
+					public void accept(ECommerceSystem.Product product, Integer numOfUnits) {
+						if (product.getStock() < numOfUnits)
+							outOfStock.addFirst(product);
+
+						else
+							product.setStock(product.getStock() - numOfUnits);
+					}
+				};
+
+				orderedProducts.forEach(processor);
+
+				if (outOfStock.isEmpty())
+					return null;
+				else
+					return outOfStock;
+			}
+
+			@Override
+			public String toString() {
+				StringBuilder strb = new StringBuilder();
+				strb.append(ID).append(":");
+
+				for (Map.Entry<ECommerceSystem.Product, Integer> entry : orderedProducts.entrySet())
+					strb.append(entry.getKey().getProductName())
+							.append(",")
+							.append(entry.getValue())
+							.append(" ");
+
+				return strb.toString();
+			}
+		}
 	}
 
 	private void createBST() {
@@ -58,8 +173,7 @@ public class ECommerceSystem {
 		for (Map.Entry<String, LinkedList<Product>> entry : products.entrySet()) {
 			productsOrdered.add(new BinarySearchTree());
 			LinkedList<Product> temp = entry.getValue();
-			Iterator<Product> iter = temp.iterator();
-			while (iter.hasNext()) productsOrdered.get(productsOrdered.size() - 1).add(iter.next().clone());
+			for (Product product : temp) productsOrdered.get(productsOrdered.size() - 1).add(product.clone());
 		}
 	}
 
@@ -87,9 +201,7 @@ public class ECommerceSystem {
 
 		@Override
 		public int compareTo(Product o){
-			if (o.price < price) return 1;
-			if (o.price == price) return 0;
-			else return -1;
+			return Double.compare(price, o.price);
 		}
 
 		public String getProductName() {

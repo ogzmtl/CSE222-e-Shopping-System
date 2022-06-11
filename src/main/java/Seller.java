@@ -14,86 +14,6 @@ public class Seller extends User {
     private Queue<Order> waitingOrders;
     private LinkedList<Product> productList;
 
-    private class Order {
-        private final int ID;
-        private Map<ECommerceSystem.Product, Integer> orderedProducts;
-
-        private static int lastID = 0;
-
-        public Order() {
-            orderedProducts = new HashMap<>();
-            ID = ++lastID;
-        }
-
-        public Order(String orderString) {
-            orderedProducts = new HashMap<>();
-
-            String[] temp = orderString.split(":");
-            ID = Integer.parseInt(temp[0]);
-            temp = temp[1].split(" ");
-
-            String[] product_stock;
-            for (String product : temp) {
-                product_stock = product.split(",");
-                orderedProducts.put(getProduct(product_stock[0], username),
-                        Integer.parseInt(product_stock[1]));
-            }
-
-            lastID = ID;
-        }
-
-        public Order(Map<ECommerceSystem.Product, Integer> orderedProducts) {
-            this.orderedProducts = new HashMap<>();
-            this.orderedProducts.putAll(orderedProducts);
-            ID = ++lastID;
-        }
-
-        public void add(ECommerceSystem.Product product, int quantity) {
-            orderedProducts.put(product, quantity);
-            product.setStock(product.getStock() - quantity);
-        }
-
-        public Integer remove(ECommerceSystem.Product product) {
-            return orderedProducts.remove(product);
-        }
-
-        public List<ECommerceSystem.Product> process() {
-            LinkedList<ECommerceSystem.Product> outOfStock = new LinkedList<>();
-
-            BiConsumer<ECommerceSystem.Product, Integer> processor = new BiConsumer<ECommerceSystem.Product, Integer>() {
-                @Override
-                public void accept(ECommerceSystem.Product product, Integer numOfUnits) {
-                    if (product.getStock() < numOfUnits)
-                        outOfStock.addFirst(product);
-
-                    else
-                        product.setStock(product.getStock() - numOfUnits);
-                }
-            };
-
-            orderedProducts.forEach(processor);
-
-            if (outOfStock.isEmpty())
-                return null;
-            else
-                return outOfStock;
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder strb = new StringBuilder();
-            strb.append(ID).append(":");
-
-            for (Map.Entry<ECommerceSystem.Product, Integer> entry : orderedProducts.entrySet())
-                strb.append(entry.getKey().getProductName())
-                        .append(",")
-                        .append(entry.getValue())
-                        .append(" ");
-
-            return strb.toString();
-        }
-    }
-
     public Seller(String username, String password, ECommerceSystem callerSystem)
             throws FileNotFoundException {
         super(username, password, callerSystem);
@@ -142,47 +62,90 @@ public class Seller extends User {
     }
 
     @Override
-    public void UI() {
+    public void UI(){
         int inputInt = 0;
         String inputStr = null;
         Scanner scan = new Scanner(System.in);
         System.out.print("Welcome to the seller menu\n");
 
-        while(true){
-            System.out.print("Enter the number of an action:\n1- Order management.\n2- Add a new product.\n3- Statistics.\n0- Log out.\n");
+        while (true) {
+            inputInt = getInputInt(scan,"Enter the number of an action:\n1- Order management.\n2- Add a new product.\n3- Statistics.\n0- Log out.\n");
+            System.out.print(inputInt);
 
-            try{
-                inputInt = scan.nextInt();
-                scan.nextLine();
-                if (inputInt == 1){
-                    if (!waitingOrders.isEmpty()) {
-                        System.out.print("Oldest order:\n");
-                        System.out.print(waitingOrders.peek());
-                        System.out.print("\nDo you want to confirm the order?\n(Answer with yes or no)\n");
-                        inputStr = scan.next();
-                        if(inputStr.equals("yes")) {
-                            waitingOrders.peek().process();
-                            orderHistory.add(waitingOrders.peek());
-                            waitingOrders.poll();
-                        }
+            if (inputInt == 1){
+                System.out.print("Waiting Orders:\n");
+                if (!waitingOrders.isEmpty()) {
+                    System.out.print("Oldest order:\n");
+                    System.out.print(waitingOrders.peek());
+                    System.out.print("\nDo you want to confirm the order?\n(Answer with yes or no)\n");
+                    inputStr = scan.next();
+                    if(inputStr.equals("yes")) {
+                        waitingOrders.peek().process();
+                        orderHistory.add(waitingOrders.peek());
+                        waitingOrders.poll();
                     }
-                    else System.out.print("There are no waiting orders.\n");
+//                    List<Order> orders = waitingOrders.stream().toList();
+//
+//                    int i = 0, pageLength;
+//                    while (true) {
+//                        pageLength = i;
+//                        System.out.printf("Page %d:\n", i/8 + 1);
+//                        for (; i < orders.length && i < 8; ++i)
+//                            System.out.print((i + 1) + "-" + orders[i].toString());
+//                        pageLength = i - pageLength;
+//
+//                        System.out.print("\nChoose an action:\nn: Next page\np: Previous page\n b: Go back\nnumber of the order to process\nChoice: ");
+//                        inputStr = scan.nextLine();
+//
+//                        if (inputStr.equals("p")) {
+//                            if (i > 7)
+//                                i = i/8 - 1;
+//                        }
+//
+//                        else if (isInteger(inputStr)) {
+//                            inputInt = Integer.parseInt(inputStr);
+//                            if (inputInt > i || inputInt < i - pageLength)
+//                                System.out.print("Invalid Input\n");
+//
+//                            else {
+//                                waitingOrders.peek().process();
+//                                orderHistory.add(waitingOrders.peek());
+//                                waitingOrders.poll();
+//                            }
+//                        }
+//                    }
+//
+//                    System.out.print("\nDo you want to confirm the order?\n(Answer with yes or no)\n");
+//                    inputStr = scan.next();
+//                    if(inputStr.equals("yes")) {
+//                        waitingOrders.peek().process();
+//                        orderHistory.add(waitingOrders.peek());
+//                        waitingOrders.poll();
+//                    }
                 }
-                else if (inputInt == 2 || inputInt == 3) System.out.print("To Be Implemented\n");
-                else if (inputInt == 0) {
-                    saveToFile();
-                    System.out.println("GOOD-BYE!");
-                    break;
+
+                else {
+                    System.out.print("There are no waiting orders.\n");
                 }
-                else System.out.println("Invalid choice, please try again.");
             }
-            catch (InputMismatchException e){
-                scan.nextLine();
-                System.out.printf("Error: %s\n", e);
-                e.printStackTrace();
-            } catch (Exception e) {
-                System.out.printf("Error: %s\n", e);
-                e.printStackTrace();
+
+            else if (inputInt == 2 || inputInt == 3) {
+                System.out.print("To Be Implemented\n");
+            }
+
+            else if (inputInt == 0) {
+                try {
+                    saveToFile();
+                } catch (IOException e) {
+                    System.out.printf("Error: %s\n", e);
+                    e.printStackTrace();
+                }
+                System.out.println("GOOD-BYE!");
+                break;
+            }
+
+            else {
+                System.out.println("Invalid choice, please try again.");
             }
         }
     }
