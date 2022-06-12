@@ -16,7 +16,8 @@ public class ECommerceSystem {
 	private Map<String, LinkedList<Product>> products = new TreeMap();
 	private PriorityQueue<Request> Requests = new PriorityQueue();
 	private ArrayList<BinarySearchTree<Product>> productsOrdered = new ArrayList();
-	protected final Map<Integer, Boolean> UnproccessedOrders = new HashMap<>();
+	private Map<Integer, Integer> UnproccessedOrders = new HashMap<>();
+	private static int lastID = 0;
 
 	public static abstract class User {
 		//protected String userID;
@@ -58,6 +59,18 @@ public class ECommerceSystem {
 				}
 			}
 			return true;
+		}
+
+		protected Map<String, LinkedList<Product>> getProductsMap(){
+			return systemRef.products;
+		}
+
+		protected int getID(){
+			return systemRef.lastID;
+		}
+
+		protected void updateOrders(int idValue, int situation){
+			systemRef.UnproccessedOrders.put(idValue, situation);
 		}
 
 		protected ArrayList<BinarySearchTree<Product>> getProducts() {
@@ -320,6 +333,16 @@ public class ECommerceSystem {
 				else Requests.add(new ProductRequest(reader.next()));
 			}
 
+			file = new File(resourcesDir + "Orders.txt");
+			file.createNewFile();
+			reader = new Scanner(file);
+			if (reader.hasNext()) lastID = Integer.parseInt(reader.next());
+			while (reader.hasNext()){
+				int idValue = Integer.parseInt(reader.next());
+				int bool = Integer.parseInt(reader.next());
+				UnproccessedOrders.put(idValue, bool);
+			}
+
 			createBST();
 		} catch (Exception e) {
 			System.out.println("Error during opening the file.");
@@ -376,7 +399,7 @@ public class ECommerceSystem {
 								passwordValue.trim();
 
 								if (Customers.containsKey(usernameValue) && Customers.get(usernameValue).equals(passwordValue)) {
-									Customer newCustomer = new Customer(usernameValue, passwordValue, this);
+									Customer newCustomer = new Customer(usernameValue, this);
 									newCustomer.UI();
 									//saveRequests();
 									logInFlag = false;
@@ -542,10 +565,27 @@ public class ECommerceSystem {
 		}
 	}
 
+	private void saveOrders(){
+		try{
+			FileWriter writer = new FileWriter(resourcesDir + "Orders.txt");
+			writer.write(lastID + "\n");
+
+			for (Map.Entry<Integer, Boolean> entry : UnproccessedOrders.entrySet()){
+				writer.write(entry.getKey() + entry.getValue() + "\n");
+			}
+
+			writer.close();
+		}
+		catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+
 	private void exit() {
 		saveProducts();
 		saveCustomers();
 		saveSellers();
 		saveRequests();
+		saveOrders();
 	}
 }
