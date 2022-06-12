@@ -17,9 +17,9 @@ import java.util.InputMismatchException;
 @SuppressWarnings("unchecked")
 public class Customer extends ECommerceSystem.User {
     private LinkedList<Pair<Product, Integer>> basket = new LinkedList();
-    private LinkedList<Pair<Pair<Product, Integer>, Integer>> formerOrders = new LinkedList();
-    private LinkedList<Pair<Pair<Product, Integer>, Integer>> orders = new LinkedList();
-    private double wallet = 0.;
+    private LinkedList<Pair<Pair<Product, Integer>, Pair<Integer, Integer>>> formerOrders = new LinkedList();
+    private LinkedList<Pair<Pair<Product, Integer>, Pair<Integer, Integer>>> orders = new LinkedList();
+    private double wallet = 0.0;
 
     public Customer(String usernameValue, ECommerceSystem callerSystem) {
         super(usernameValue, callerSystem);
@@ -28,7 +28,6 @@ public class Customer extends ECommerceSystem.User {
             File file = new File(systemRef.resourcesDir + "Customers/" + username + ".txt");
             if (file.exists()) {
                 Scanner scan = new Scanner(file);
-                String buffer = scan.nextLine();
 
                 wallet = Double.parseDouble(scan.nextLine());
 
@@ -38,7 +37,8 @@ public class Customer extends ECommerceSystem.User {
                     String seller = scan.next();
                     Double price = Double.parseDouble(scan.next());
                     int stock = Integer.parseInt(scan.next());
-                    basket.add(new Pair<Product, Integer>(new Product(product, seller, price, stock)));
+                    int amount = Integer.parseInt(scan.next());
+                    basket.add(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount));
                 }
             }
                         /*
@@ -64,12 +64,12 @@ public class Customer extends ECommerceSystem.User {
                 writer.write(p.getKey().getProductName() + " " + p.getKey() + " " + p.getValue() + "\n");
 
             writer.write(formerOrders.size() + "\n");
-            for (Pair<Pair<Product, Integer>,Integer> p : formerOrders)
-                writer.write(p.getKey().getKey().getProductName() + " " + p.getKey().getKey() + " " + p.getKey().getValue() + " " + p.getValue() + "\n");
+            for (Pair<Pair<Product, Integer>, Pair<Integer, Integer>> p : formerOrders)
+                writer.write(p.getKey().getKey().getProductName() + " " + p.getKey().getKey() + " " + p.getKey().getValue() + " " + p.getValue().getKey() + " " + p.getValue().getValue() + "\n");
             
             writer.write(orders.size() + "\n");
-            for (Pair<Pair<Product, Integer>,Integer> p : orders)
-                writer.write(p.getKey().getKey().getProductName() + " " + p.getKey().getKey() + " " + p.getKey().getValue() + " " + p.getValue() + "\n");
+            for (Pair<Pair<Product, Integer>, Pair<Integer, Integer>> p : orders)
+                writer.write(p.getKey().getKey().getProductName() + " " + p.getKey().getKey() + " " + p.getKey().getValue() + " " + p.getValue().getKey() + " " + p.getValue().getValue() + "\n");
 
             writer.close();
         }catch (Exception e){
@@ -285,7 +285,7 @@ public class Customer extends ECommerceSystem.User {
                     if (sum > wallet){ System.out.println("There is no enough money at your wallet."); continue; }
 
                     for (Pair<Product, Integer> p : basket){
-                        orders.add(new Pair<Pair<Product, Integer>, Integer>(p, getID()));
+                        orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(p, new Pair<Integer, Integer>(getID(), 0)));
                         Seller seller = new Seller(p.getKey().getSellerName(), systemRef);
                         //seller.addOrder(p, getID(), p.getValue(), username, (Integer)phone.toString(), addr);
                         //seller.saveToFile();
@@ -296,18 +296,18 @@ public class Customer extends ECommerceSystem.User {
                 } else if (choice == 9){
                     if (formerOrders.size() == 0) System.out.println("There is no former order.");
                     else{
-                        for (Pair<Pair<Product, Integer>, Integer> p : formerOrders) 
+                        for (Pair<Pair<Product, Integer>, Pair<Integer, Integer>> p : formerOrders) 
                             System.out.println("Product: " + p.getKey().getKey().getProductName() + " - Seller: " + p.getKey().getKey().getSellerName() + " - Price: " + p.getKey().getKey().getPrice() + " - Amount: " + p.getKey().getValue());
                     }
                 } else if (choice == 10){
                     if (formerOrders.size() == 0 && orders.size() == 0) System.out.println("There is no orders yet.");
                     else{
-                        for (Pair<Pair<Product, Integer>, Integer> p : formerOrders){
+                        for (Pair<Pair<Product, Integer>, Pair<Integer, Integer>> p : formerOrders){
                             System.out.printf("Product: " + p.getKey().getKey().getProductName() + " - Seller: " + p.getKey().getKey().getSellerName() + " - Price: " + p.getKey().getKey().getPrice() + " - Amount: " + p.getKey().getValue());
-                            if (p.getValue() == -1) System.out.println(" - Status: CANCELLED");
-                            else if (p.getValue() == 1) System.out.println(" - Status: FINISHED");
+                            if (p.getValue().getValue() == -1) System.out.println(" - Status: CANCELLED");
+                            else if (p.getValue().getValue() == 1) System.out.println(" - Status: FINISHED");
                         }
-                        for (Pair<Pair<Product, Integer>, Integer> p : orders){
+                        for (Pair<Pair<Product, Integer>, Pair<Integer, Integer>> p : orders){
                             System.out.println("Product: " + p.getKey().getKey().getProductName() + " - Seller: " + p.getKey().getKey().getSellerName() + " - Price: " + p.getKey().getKey().getPrice() + " - Amount: " + p.getKey().getValue() + " - Status: WAITING");
                         }
                     }
