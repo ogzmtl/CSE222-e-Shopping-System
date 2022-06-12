@@ -13,6 +13,10 @@ public class BinarySearchTree<E> extends BinaryTree<E> implements SearchTree<E>{
 		deleter = null;
 	}
 
+	public BinarySearchTree(Node<E> root){
+		super(root);
+	}
+
 	/**
 	 * add method to add given element to the tree.
 	 * @param element Element to be added to tree.
@@ -119,6 +123,24 @@ public class BinarySearchTree<E> extends BinaryTree<E> implements SearchTree<E>{
 	public boolean remove(E target){
 		if (delete(target) != null) return true;
 		else return false;
+	}
+
+	/**
+	 * This method returns left subtree
+	 * @return Left subtree
+	 */
+	public BinarySearchTree<E> getLeftSubtree(){
+		if (root != null && root.left != null) return new BinarySearchTree<E>(root.left);
+		else return null;
+	}
+
+	/**
+	 * This method returns right subtree
+	 * @return Right subtree
+	 */
+	public BinarySearchTree<E> getRightSubtree(){
+		if (root != null && root.right != null) return new BinarySearchTree<E>(root.right);
+		else return null;
 	}
 
 	private E largestChild(Node<E> parent){
