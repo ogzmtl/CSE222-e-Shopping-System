@@ -4,19 +4,74 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.*;
-import java.util.function.BiConsumer;
 
 import main.java.ECommerceSystem.*;
 
 public class Seller extends User {
+    protected class Order {
+        private String customer, address, phoneNum;
+        private Product product;
+        private final int ID;
+        private int quantity;
+
+        public Order(String orderString) {
+            String[] temp = orderString.split(" ");
+            ID = Integer.parseInt(temp[0]);
+            product = getProduct(temp[1], username);
+            quantity = Integer.parseInt(temp[2]);
+            customer = temp[3];
+            phoneNum = temp[4];
+            address = temp[5];
+        }
+
+        public Order(Product product, int ID, int quantity, String customer, String phoneNum, String address) {
+            if (product == null || customer == null || phoneNum == null || address  == null)
+                throw new InvalidParameterException();
+
+            this.ID = ID;
+            this.quantity = quantity;
+            this.product = product;
+            this.customer = customer;
+            this.address = address;
+            this.phoneNum = phoneNum;
+        }
+
+        public void Accept() {
+            systemRef.UnproccessedOrders.put(ID, true);
+        }
+
+        public boolean setQuantity(int quantity) {
+            if (quantity < 0 || quantity <= product.getStock() + this.quantity) {
+                product.setStock(product.getStock() + this.quantity - quantity);
+                this.quantity = quantity;
+                return true;
+            }
+
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder strb = new StringBuilder();
+            strb.append(ID).append(":")
+                .append(product.getProductName())
+                .append(",")
+                .append(quantity)
+                .append(" ");
+
+            return strb.toString();
+        }
+    }
+
     private LinkedList<Order> orderHistory;
     private Queue<Order> waitingOrders;
     private LinkedList<Product> productList;
 
-    public Seller(String username, String password, ECommerceSystem callerSystem)
+    public Seller(String username, ECommerceSystem callerSystem)
             throws FileNotFoundException {
-        super(username, password, callerSystem);
+        super(username, callerSystem);
 
         orderHistory = new LinkedList<>();
         waitingOrders = new ArrayDeque<>();
@@ -80,7 +135,7 @@ public class Seller extends User {
                     System.out.print("\nDo you want to confirm the order?\n(Answer with yes or no)\n");
                     inputStr = scan.next();
                     if(inputStr.equals("yes")) {
-                        waitingOrders.peek().process();
+                        waitingOrders.peek().Accept();
                         orderHistory.add(waitingOrders.peek());
                         waitingOrders.poll();
                     }
@@ -170,7 +225,7 @@ public class Seller extends User {
         file.close();
     }
 
-    public void addOrder (Map<ECommerceSystem.Product, Integer> orderProducts) {
-        waitingOrders.add(new Order(orderProducts));
+    public void addOrder (Product product, int ID, int quantity, String customer, String phoneNum, String address) {
+        waitingOrders.add(new Order(product, ID, quantity, customer, phoneNum, address));
     }
 }

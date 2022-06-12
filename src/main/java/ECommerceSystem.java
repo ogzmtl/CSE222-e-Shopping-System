@@ -16,20 +16,19 @@ public class ECommerceSystem {
 	private Map<String, LinkedList<Product>> products = new TreeMap();
 	private PriorityQueue<Request> Requests = new PriorityQueue();
 	private ArrayList<BinarySearchTree<Product>> productsOrdered = new ArrayList();
+	protected final Map<Integer, Boolean> UnproccessedOrders = new HashMap<>();
 
 	public static abstract class User {
 		//protected String userID;
 		protected ECommerceSystem systemRef;
 		protected String username;
-		protected String password;
 
-		public User(String usernameValue, String passwordValue, ECommerceSystem callerSystem){
+		User(String usernameValue, ECommerceSystem callerSystem){
 			username = usernameValue;
-			password = passwordValue;
 			systemRef = callerSystem;
 		}
 
-		public abstract void UI();
+		protected abstract void UI();
 
 		protected Product getProduct(String productName, String seller) {
 			LinkedList<Product> targetList = systemRef.products.get(productName);
@@ -65,8 +64,17 @@ public class ECommerceSystem {
 			return systemRef.productsOrdered;
 		}
 
-		protected void changePass (String newPass) {
-			password = newPass;
+		protected void changePass (String newPass) throws InvalidClassException {
+			if (getClass().equals(Seller.class))
+				systemRef.Sellers.putIfAbsent(username, newPass);
+
+			else if (getClass().equals(Customer.class))
+				systemRef.Customers.putIfAbsent(username, newPass);
+
+			else if (getClass().equals(Admin.class))
+				systemRef.Admins.putIfAbsent(username, newPass);
+
+			else throw new InvalidClassException("This user is not allowed in the system");
 		}
 
 		protected int getInputInt(Scanner scan, String message) {
@@ -84,86 +92,6 @@ public class ECommerceSystem {
 						System.out.print("\033[2A\r\033[JInvalid Input\n");
 					}
 				}
-			}
-		}
-
-		protected class Order {
-			private final int ID;
-			private Map<ECommerceSystem.Product, Integer> orderedProducts;
-
-			private static int lastID = 0;
-
-			public Order() {
-				orderedProducts = new HashMap<>();
-				ID = ++lastID;
-			}
-
-			public Order(String orderString) {
-				orderedProducts = new HashMap<>();
-
-				String[] temp = orderString.split(":");
-				ID = Integer.parseInt(temp[0]);
-				temp = temp[1].split(" ");
-
-				String[] product_stock;
-				for (String product : temp) {
-					product_stock = product.split(",");
-					orderedProducts.put(getProduct(product_stock[0], username),
-							Integer.parseInt(product_stock[1]));
-				}
-
-				lastID = ID;
-			}
-
-			public Order(Map<ECommerceSystem.Product, Integer> orderedProducts) {
-				this.orderedProducts = new HashMap<>();
-				this.orderedProducts.putAll(orderedProducts);
-				ID = ++lastID;
-			}
-
-			public void add(ECommerceSystem.Product product, int quantity) {
-				orderedProducts.put(product, quantity);
-				product.setStock(product.getStock() - quantity);
-			}
-
-			public Integer remove(ECommerceSystem.Product product) {
-				return orderedProducts.remove(product);
-			}
-
-			public List<ECommerceSystem.Product> process() {
-				LinkedList<ECommerceSystem.Product> outOfStock = new LinkedList<>();
-
-				BiConsumer<Product, Integer> processor = new BiConsumer<ECommerceSystem.Product, Integer>() {
-					@Override
-					public void accept(ECommerceSystem.Product product, Integer numOfUnits) {
-						if (product.getStock() < numOfUnits)
-							outOfStock.addFirst(product);
-
-						else
-							product.setStock(product.getStock() - numOfUnits);
-					}
-				};
-
-				orderedProducts.forEach(processor);
-
-				if (outOfStock.isEmpty())
-					return null;
-				else
-					return outOfStock;
-			}
-
-			@Override
-			public String toString() {
-				StringBuilder strb = new StringBuilder();
-				strb.append(ID).append(":");
-
-				for (Map.Entry<ECommerceSystem.Product, Integer> entry : orderedProducts.entrySet())
-					strb.append(entry.getKey().getProductName())
-							.append(",")
-							.append(entry.getValue())
-							.append(" ");
-
-				return strb.toString();
 			}
 		}
 	}
@@ -237,8 +165,8 @@ public class ECommerceSystem {
 	}
 
 	private class Admin extends User {
-		public Admin(String usernameValue, String passwordValue, ECommerceSystem callerSystem) {
-			super(usernameValue, passwordValue, callerSystem);
+		public Admin(String usernameValue, ECommerceSystem callerSystem) {
+			super(usernameValue, callerSystem);
 		}
 
 		public void UI() {
@@ -269,7 +197,7 @@ public class ECommerceSystem {
 								String acceptance = scan.nextLine();
 								if (acceptance.equals("y")) {
 									if (Requests.peek().priority == 0)
-										Sellers.put(((SellerRequest) Requests.peek()).user.username, ((SellerRequest) Requests.poll()).user.password);
+										Sellers.put(((SellerRequest) Requests.peek()).user.username, ((SellerRequest) Requests.poll()).password);
 									else addProduct(((ProductRequest) Requests.poll()).productName);
 									acceptFlag = false;
 								} else if (acceptance.equals("n")) {
@@ -327,9 +255,11 @@ public class ECommerceSystem {
 
 	protected static class SellerRequest extends Request {
 		private User user;
+		private String password;
 
-		public SellerRequest(User user) {
+		public SellerRequest(User user, String password) {
 			this.user = user;
+			this.password = password;
 			priority = 0;
 		}
 
@@ -386,7 +316,7 @@ public class ECommerceSystem {
 			reader = new Scanner(file);
 			while (reader.hasNext()) {
 				int priority = Integer.parseInt(reader.next());
-				if (priority == 0) Requests.add(new SellerRequest(new Seller(reader.next(), reader.next(), this)));
+				if (priority == 0) Requests.add(new SellerRequest(new Seller(reader.next(), this), reader.next()));
 				else Requests.add(new ProductRequest(reader.next()));
 			}
 
@@ -433,7 +363,7 @@ public class ECommerceSystem {
 								passwordValue.trim();
 
 								if (Admins.containsKey(usernameValue) && Admins.get(usernameValue).equals(passwordValue)) {
-									Admin newAdmin = new Admin(usernameValue, passwordValue, this);
+									Admin newAdmin = new Admin(usernameValue, this);
 									newAdmin.UI();
 									logInFlag = false;
 								} else System.out.println("Invalid username or password!");
@@ -460,7 +390,7 @@ public class ECommerceSystem {
 								passwordValue.trim();
 
 								if (Sellers.containsKey(usernameValue) && Sellers.get(usernameValue).equals(passwordValue)) {
-									Seller newSeller = new Seller(usernameValue, passwordValue, this);
+									Seller newSeller = new Seller(usernameValue, this);
 									newSeller.UI();
 									saveRequests();
 									logInFlag = false;
@@ -503,7 +433,7 @@ public class ECommerceSystem {
 								passwordValue.trim();
 
 								if (!Sellers.containsKey(usernameValue)) {
-									SellerRequest newRequest = new SellerRequest(new Seller(usernameValue, passwordValue, this));
+									SellerRequest newRequest = new SellerRequest(new Seller(usernameValue, this), passwordValue);
 									Requests.add(newRequest);
 									System.out.println("Approval sent!\n");
 									saveRequests();
@@ -602,7 +532,7 @@ public class ECommerceSystem {
 			while (iterator.hasNext()) {
 				Request temp = iterator.next();
 				if (temp.priority == 0)
-					writer.write(temp.priority + " " + ((SellerRequest) temp).user.username + " " + ((SellerRequest) temp).user.password + "\n");
+					writer.write(temp.priority + " " + ((SellerRequest) temp).user.username + " " + ((SellerRequest) temp).password + "\n");
 				else writer.write(temp.priority + " " + ((ProductRequest) temp).productName + "\n");
 			}
 
