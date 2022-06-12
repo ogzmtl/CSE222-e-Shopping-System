@@ -20,7 +20,6 @@ public class ECommerceSystem {
 	private static int lastID = 0;
 
 	public static abstract class User {
-		//protected String userID;
 		protected ECommerceSystem systemRef;
 		protected String username;
 
@@ -61,6 +60,10 @@ public class ECommerceSystem {
 			return true;
 		}
 
+		protected void incrementID(){
+			systemRef.lastID++;
+		}
+
 		protected Map<String, LinkedList<Product>> getProductsMap(){
 			return systemRef.products;
 		}
@@ -71,6 +74,10 @@ public class ECommerceSystem {
 
 		protected void updateOrders(int idValue, int situation){
 			systemRef.UnproccessedOrders.put(idValue, situation);
+		}
+
+		protected HashMap<Integer, Integer> getOrders(){
+			return (HashMap)systemRef.UnproccessedOrders;
 		}
 
 		protected ArrayList<BinarySearchTree<Product>> getProducts() {
@@ -226,13 +233,21 @@ public class ECommerceSystem {
 							System.out.printf("Enter the username you want to remove: ");
 							remove = scan.nextLine();
 							remove.trim();
-							if (Sellers.containsKey(remove)) Sellers.remove(remove);
+							if (Sellers.containsKey(remove)){
+								Sellers.remove(remove);
+								File file = new File(resourcesDir + "Sellers/" + username + ".txt");
+								file.delete();
+							}
 							else System.out.println("There is no such user.");
 						} else if (remove.equals("c")) {
 							System.out.printf("Enter the username you want to remove: ");
 							remove = scan.nextLine();
 							remove.trim();
-							if (Customers.containsKey(remove)) Customers.remove(remove);
+							if (Customers.containsKey(remove)){
+								Customers.remove(remove);
+								File file = new File(resourcesDir + "Customers/" + username + ".txt");
+								file.delete();
+							}
 							else System.out.println("There is no such user.");
 						} else System.out.println("Invalid choice.");
 					} else if (choice == 3) {
@@ -570,7 +585,7 @@ public class ECommerceSystem {
 			FileWriter writer = new FileWriter(resourcesDir + "Orders.txt");
 			writer.write(lastID + "\n");
 
-			for (Map.Entry<Integer, Boolean> entry : UnproccessedOrders.entrySet()){
+			for (Map.Entry<Integer, Integer> entry : UnproccessedOrders.entrySet()){
 				writer.write(entry.getKey() + entry.getValue() + "\n");
 			}
 
