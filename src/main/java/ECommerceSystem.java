@@ -235,7 +235,7 @@ public class ECommerceSystem {
 							remove.trim();
 							if (Sellers.containsKey(remove)){
 								Sellers.remove(remove);
-								File file = new File(resourcesDir + "Sellers/" + username + ".txt");
+								File file = new File(resourcesDir + "Sellers/" + remove + ".txt");
 								file.delete();
 							}
 							else System.out.println("There is no such user.");
@@ -245,7 +245,7 @@ public class ECommerceSystem {
 							remove.trim();
 							if (Customers.containsKey(remove)){
 								Customers.remove(remove);
-								File file = new File(resourcesDir + "Customers/" + username + ".txt");
+								File file = new File(resourcesDir + "Customers/" + remove + ".txt");
 								file.delete();
 							}
 							else System.out.println("There is no such user.");
