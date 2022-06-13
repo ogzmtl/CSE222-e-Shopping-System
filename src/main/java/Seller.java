@@ -136,6 +136,9 @@ public class Seller extends User {
                 file.renameTo(new File(systemRef.resourcesDir + "Sellers/" + username + "_corrupted.txt"));
             }
         }
+
+        else
+            file.mkdir();
     }
 
     @Override
@@ -145,7 +148,7 @@ public class Seller extends User {
         Scanner scan = new Scanner(System.in);
 
         while (true) {
-            System.out.print("\033[H\033[2JWelcome to the seller menu\nEnter the number of an action:\n1- Order management.\n2- Product Management.\n3- Statistics.\n0- Log out.\n\n");
+            System.out.print("\033[H\033[2JWelcome to the seller menu\nEnter the number of an action:\n1- Order management.\n2- Product Management.\n0- Log out.\n\n");
             inputInt = getInputInt(scan, "Choice: ");
 
             if (inputInt == 1){
@@ -576,10 +579,6 @@ public class Seller extends User {
                         System.out.println("Invalid choice, please try again.");
                     }
                 }
-            }
-
-            else if(inputInt == 3) {
-                System.out.print("To Be Implemented\n");
             }
 
             else if (inputInt == 0) {

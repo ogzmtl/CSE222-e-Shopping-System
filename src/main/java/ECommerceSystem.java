@@ -9,7 +9,7 @@ import main.DataStructures.Trees.BinarySearchTree;
 
 @SuppressWarnings("unchecked")
 public class ECommerceSystem {
-	protected final String resourcesDir = System.getProperty("user.dir") + "/bin/main/resources/";
+	protected final String resourcesDir = System.getProperty("user.dir") + "/src/main/resources/";
 	private Map<String, String> Sellers = new HashMap<>();
 	private Map<String, String> Customers = new HashMap<>();
 	private Map<String, String> Admins = new HashMap<>();
