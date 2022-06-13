@@ -161,104 +161,97 @@ public class Seller extends User {
                     System.out.print("\033[H\033[2JOrder Management:\n0- Go back.\n1- Waiting Orders.\n2- Order History.\n\n");
                     inputInt = getInputInt(scan, "Choice: ");
                     if (inputInt == 1) {
-                        if (!waitingOrders.isEmpty()) {
-                            Object[] orders = waitingOrders.toArray();
+                        Object[] orders = waitingOrders.toArray();
 
-                            int i = 0, pageStart;
-                            boolean flag1 = true;
-                            while (flag1) {
-                                System.out.print("\033[H\033[2JWaiting Orders:\n");
+                        int i = 0, pageStart;
+                        boolean flag1 = true;
+                        while (flag1) {
+                            System.out.print("\033[H\033[2JWaiting Orders:\n");
 
-                                if (waitingOrders.isEmpty()) {
-                                    System.out.print("There are no waiting orders.\n(Tap Enter to go back)");
-                                    scan.nextLine();
-                                    break;
+                            if (waitingOrders.isEmpty()) {
+                                System.out.print("There are no waiting orders.\n(Tap Enter to go back)");
+                                scan.nextLine();
+                                break;
+                            }
+
+                            pageStart = i;
+                            System.out.printf("Page %d:\n", i / 8 + 1);
+                            for (; i < orders.length && i < pageStart + 8; ++i) {
+                                Order order = (Order) orders[i];
+                                System.out.printf("%d- %06d: %s %d, %s\n", (i + 1),
+                                        order.ID, order.product.getProductName(),
+                                        order.quantity, order.customer);
+                            }
+
+                            System.out.print("\nChoose an action:\n0: Go back\nn: Next page\np: Previous page\ne: Examine the fist order\n\n");
+                            boolean flag2 = true;
+                            while (flag2) {
+                                System.out.print("Choice: ");
+                                inputStr = scan.nextLine();
+
+                                if (inputStr.equals("p")) {
+                                    if (pageStart > 7) {
+                                        i = pageStart - 8;
+                                        flag2 = false;
+                                    }
+
+                                    else
+                                        System.out.print("\033[2A\r\033[JThere are no previous pages.\n");
                                 }
 
-                                pageStart = i;
-                                System.out.printf("Page %d:\n", i / 8 + 1);
-                                for (; i < orders.length && i < pageStart + 8; ++i) {
-                                    Order order = (Order) orders[i];
-                                    System.out.printf("%d- %06d: %s %d, %s\n", (i + 1),
-                                            order.ID, order.product.getProductName(),
-                                            order.quantity, order.customer);
+                                else if (inputStr.equals("n")) {
+                                    if (i >= waitingOrders.size() - 1) {
+                                        System.out.print("\033[2A\r\033[JThere are no next pages.\n");
+                                        i = pageStart;
+                                    }
+
+                                    flag2 = false;
                                 }
 
-                                System.out.print("\nChoose an action:\n0: Go back\nn: Next page\np: Previous page\ne: Examine the fist order\n\n");
-                                boolean flag2 = true;
-                                while (flag2) {
-                                    System.out.print("Choice: ");
-                                    inputStr = scan.nextLine();
+                                else if (inputStr.equals("0")) {
+                                    flag1 = false;
+                                    flag2 = false;
+                                }
 
-                                    if (inputStr.equals("p")) {
-                                        if (pageStart > 7) {
-                                            i = pageStart - 8;
+                                else if (inputStr.equals("e")) {
+                                    Order head = waitingOrders.peek();
+                                    System.out.printf("\nOrder %d:\nProduct: %s\nQuantity: %d\nCustomer: %s\nAddress: %s\nPhone Number: %s",
+                                            head.ID, head.product.getProductName(), head.quantity, head.customer, head.address, head.phoneNum);
+                                    System.out.print("\nChoose an action:\n0- Go back\n1- Approve\n2- Reject\n\n");
+                                    while (true) {
+                                        inputInt = getInputInt(scan, "Choice: ");
+                                        if (inputInt == 1) {
+                                            waitingOrders.peek().accept();
+                                            orderHistory.insert(waitingOrders.poll());
+                                            orders = waitingOrders.toArray();
                                             flag2 = false;
-                                        }
-
-                                        else
-                                            System.out.print("\033[2A\r\033[JThere are no previous pages.\n");
-                                    }
-
-                                    else if (inputStr.equals("n")) {
-                                        if (i >= waitingOrders.size() - 1) {
-                                            System.out.print("\033[2A\r\033[JThere are no next pages.\n");
                                             i = pageStart;
+                                            break;
                                         }
 
-                                        flag2 = false;
-                                    }
-
-                                    else if (inputStr.equals("0")) {
-                                        flag1 = false;
-                                        flag2 = false;
-                                    }
-
-                                    else if (inputStr.equals("e")) {
-                                        Order head = waitingOrders.peek();
-                                        System.out.printf("\nOrder %d:\nProduct: %s\nQuantity: %d\nCustomer: %s\nAddress: %s\nPhone Number: %s",
-                                                head.ID, head.product.getProductName(), head.quantity, head.customer, head.address, head.phoneNum);
-                                        System.out.print("\nChoose an action:\n0- Go back\n1- Approve\n2- Reject\n\n");
-                                        while (true) {
-                                            inputInt = getInputInt(scan, "Choice: ");
-                                            if (inputInt == 1) {
-                                                waitingOrders.peek().accept();
-                                                orderHistory.insert(waitingOrders.poll());
-                                                orders = waitingOrders.toArray();
-                                                flag2 = false;
-                                                i = pageStart;
-                                                break;
-                                            }
-
-                                            if (inputInt == 2) {
-                                                waitingOrders.peek().reject();
-                                                orderHistory.insert(waitingOrders.poll());
-                                                orders = waitingOrders.toArray();
-                                                flag2 = false;
-                                                i = pageStart;
-                                                break;
-                                            }
-
-                                            else if (inputInt == 0) {
-                                                i = pageStart;
-                                                flag2 = false;
-                                                break;
-                                            }
-
-                                            System.out.print("\033[2A\r\033[JInvalid Input\n");
+                                        if (inputInt == 2) {
+                                            waitingOrders.peek().reject();
+                                            orderHistory.insert(waitingOrders.poll());
+                                            orders = waitingOrders.toArray();
+                                            flag2 = false;
+                                            i = pageStart;
+                                            break;
                                         }
-                                    }
 
-                                    else {
+                                        else if (inputInt == 0) {
+                                            i = pageStart;
+                                            flag2 = false;
+                                            break;
+                                        }
+
                                         System.out.print("\033[2A\r\033[JInvalid Input\n");
                                     }
                                 }
-                            }
-                        }
 
-                        else {
-                            System.out.print("There are no waiting orders.\n(Tap Enter to go back)");
-                            scan.nextLine();
+                                else {
+                                    System.out.print("\033[2A\r\033[JInvalid Input\n");
+                                }
+                            }
                         }
                     }
 
@@ -595,6 +588,7 @@ public class Seller extends User {
                             else
                                 break;
 
+                            newProductRequest(inputStr);
                             scan.nextLine();
                         }
                     }
