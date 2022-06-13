@@ -1,10 +1,10 @@
-Cactus 
+Cactus Enes 10.0 5 
 Camera 
 Chess 
 Flower 
-Guitar
-Headphone
-Laptop
+Guitar 
+Headphone 
+Laptop 
 Phone 
 Piano 
 T-shirt 

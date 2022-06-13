@@ -136,9 +136,6 @@ public class Seller extends User {
                 file.renameTo(new File(systemRef.resourcesDir + "Sellers/" + username + "_corrupted.txt"));
             }
         }
-
-        else
-            file.mkdir();
     }
 
     @Override
