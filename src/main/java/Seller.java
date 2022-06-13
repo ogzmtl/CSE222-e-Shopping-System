@@ -172,7 +172,7 @@ public class Seller extends User {
                                 if (waitingOrders.isEmpty()) {
                                     System.out.print("There are no waiting orders.\n(Tap Enter to go back)");
                                     scan.nextLine();
-                                    flag1 = false;
+                                    break;
                                 }
 
                                 pageStart = i;
@@ -623,6 +623,7 @@ public class Seller extends User {
     }
 
     public void saveToFile() throws IOException {
+        new File(systemRef.resourcesDir + "Sellers").mkdir();
         FileWriter file = new FileWriter(systemRef.resourcesDir + "Sellers/" + username + ".txt");
         file.write(username + "\n");
 
