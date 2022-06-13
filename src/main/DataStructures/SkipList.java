@@ -122,6 +122,9 @@ public class SkipList <E extends Comparable<E>> {
 
 	@SuppressWarnings("unchecked")
 	public E[] toArray() {
+		if (size == 0)
+			return null;
+
 		E[] result = (E[]) Array.newInstance(head.links[0].data.getClass(), size);
 		SLNode<E> current = head.links[0];
 

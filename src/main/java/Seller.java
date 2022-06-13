@@ -1,9 +1,6 @@
 package main.java;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.security.InvalidParameterException;
 import java.util.*;
 
@@ -81,8 +78,7 @@ public class Seller extends User {
     private Queue<Order> waitingOrders;
     private ArrayList<Product> productList;
 
-    public Seller(String username, ECommerceSystem callerSystem)
-            throws FileNotFoundException {
+    public Seller(String username, ECommerceSystem callerSystem) {
         super(username, callerSystem);
 
         orderHistory = new SkipList<>();
@@ -91,45 +87,53 @@ public class Seller extends User {
 
         File file = new File(systemRef.resourcesDir + "Sellers/" + username + ".txt");
         if (file.exists()) {
-            Scanner reader = new Scanner(file);
-            String buffer = reader.nextLine();
-            Product targetProduct;
+            try {
+                Scanner reader = new Scanner(file);
+                String buffer = reader.nextLine();
+                Product targetProduct;
 
-            // Check that the file is not corrupted
-            // Each file must start with the name of the seller
-            if (!buffer.contains(username)) {
-                file.renameTo(new File(username + "_damaged.txt"));
-                throw new FileNotFoundException("The file found was damaged");
-            }
+                // Check that the file is not corrupted
+                // Each file must start with the name of the seller
+                if (!buffer.contains(username))
+                    throw new StreamCorruptedException();
 
-            // The list of products
-            if (reader.hasNext()){
-                buffer = reader.nextLine();
-                String[] products = buffer.split(" ");
-                for (String productName : products)
-                    productList.add(getProduct(productName, username));
-            }
-
-            // The list of waiting orders
-            if (reader.hasNext()) {
-                buffer = reader.nextLine();
-                if (!buffer.isEmpty()) {
-                    String[] orders = buffer.split("\\|");
-                    for (String orderString : orders)
-                        waitingOrders.add(new Order(orderString));
-                }
-            }
-
-            // The list of past orders
-            if (reader.hasNext()) {
-                buffer = reader.nextLine();
-                if (!buffer.isEmpty()) {
-                    String[] orders = buffer.split("\\|");
-                    for (String orderString : orders) {
-                        Order order = new Order(orderString);
-                        orderHistory.insert(order);
+                // The list of products
+                if (reader.hasNext()) {
+                    buffer = reader.nextLine();
+                    String[] products = buffer.split(" ");
+                    for (String productName : products) {
+                        Product target = getProduct(productName, username);
+                        if (target != null)
+                            productList.add(target);
                     }
                 }
+
+                // The list of waiting orders
+                if (reader.hasNext()) {
+                    buffer = reader.nextLine();
+                    if (!buffer.isEmpty()) {
+                        String[] orders = buffer.split("\\|");
+                        for (String orderString : orders)
+                            waitingOrders.add(new Order(orderString));
+                    }
+                }
+
+                // The list of past orders
+                if (reader.hasNext()) {
+                    buffer = reader.nextLine();
+                    if (!buffer.isEmpty()) {
+                        String[] orders = buffer.split("\\|");
+                        for (String orderString : orders) {
+                            Order order = new Order(orderString);
+                            orderHistory.insert(order);
+                        }
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                System.out.print("The file was not found, default values are used.\n");
+            } catch (NoSuchElementException | StreamCorruptedException el) {
+                System.out.print("The file was corrupted, default values are used.\n");
+                file.renameTo(new File(systemRef.resourcesDir + "Sellers/" + username + "_corrupted.txt"));
             }
         }
     }
@@ -599,13 +603,8 @@ public class Seller extends User {
         FileWriter file = new FileWriter(systemRef.resourcesDir + "Sellers/" + username + ".txt");
         file.write(username + "\n");
 
-        for (Product product : productList) {
-            try {
-                file.write(product.getProductName() + " ");
-            } catch (Exception e) {
-                System.out.print("A product not present in the system was detected\n(Not added to the file)\n");
-            }
-        }
+        for (Product product : productList)
+            file.write(product.getProductName() + " ");
 
         file.write("\n");
 
@@ -615,8 +614,9 @@ public class Seller extends User {
         file.write("\n");
 
         Order[] old = orderHistory.toArray();
-        for (Order order : old)
-            file.write(order + "|");
+        if (old != null)
+            for (Order order : old)
+                file.write(order + "|");
 
         file.close();
     }
