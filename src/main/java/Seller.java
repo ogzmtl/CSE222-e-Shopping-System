@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.*;
 
-import main.DataStructures.SkipList;
 import main.DataStructures.Trees.BinarySearchTree;
 import main.java.ECommerceSystem.*;
 
@@ -157,19 +156,18 @@ public class Seller extends User {
                         if (!waitingOrders.isEmpty()) {
                             Object[] orders = waitingOrders.toArray();
 
-                            int i = 0, pageLength;
+                            int i = 0, pageStart;
                             boolean flag1 = true;
                             while (flag1) {
                                 System.out.print("\033[H\033[2JWaiting Orders:\n");
-                                pageLength = i;
+                                pageStart = i;
                                 System.out.printf("Page %d:\n", i / 8 + 1);
-                                for (; i < orders.length && i < pageLength + 8; ++i) {
+                                for (; i < orders.length && i < pageStart + 8; ++i) {
                                     Order order = (Order) orders[i];
                                     System.out.printf("%d- %06d: %s %d, %s\n", (i + 1),
                                             order.ID, order.product.getProductName(),
                                             order.quantity, order.customer);
                                 }
-                                pageLength = i - pageLength;
 
                                 System.out.print("\nChoose an action:\n0: Go back\nn: Next page\np: Previous page\ne: Examine the fist order\n\n");
                                 boolean flag2 = true;
@@ -178,8 +176,8 @@ public class Seller extends User {
                                     inputStr = scan.nextLine();
 
                                     if (inputStr.equals("p")) {
-                                        if (i > 7) {
-                                            i = (int) Math.pow((double) i, (double) (i / 8 - 1));
+                                        if (pageStart > 7) {
+                                            i = pageStart - 8;
                                             flag2 = false;
                                         }
 
@@ -188,13 +186,12 @@ public class Seller extends User {
                                     }
 
                                     else if (inputStr.equals("n")) {
-                                        if (i < orders.length - 1) {
-                                            i = (int) Math.pow((double) i, (double) (i / 8 + 1));
-                                            flag2 = false;
+                                        if (i >= waitingOrders.size() - 1) {
+                                            System.out.print("\033[2A\r\033[JThere are no next pages.\n");
+                                            i = pageStart;
                                         }
 
-                                        else
-                                            System.out.print("\033[2A\r\033[JThere are no next pages.\n");
+                                        flag2 = false;
                                     }
 
                                     else if (inputStr.equals("0")) {
@@ -212,14 +209,15 @@ public class Seller extends User {
                                             inputStr = scan.nextLine();
                                             if (inputStr.equals("yes")) {
                                                 waitingOrders.peek().accept();
-                                                orderHistory.add(waitingOrders.peek().ID, waitingOrders.poll());
-                                                orders = waitingOrders.stream().toArray();
+                                                orderHistory.add(waitingOrders.poll());
+                                                orders = waitingOrders.toArray();
                                                 flag2 = false;
+                                                i = pageStart;
                                                 break;
                                             }
 
                                             else if (inputStr.equals("no")) {
-                                                i -= pageLength;
+                                                i = pageStart;
                                                 flag2 = false;
                                                 break;
                                             }
@@ -444,7 +442,7 @@ public class Seller extends User {
                                 for (; i < products.length && i - pageStart < 8; ++i)
                                     System.out.printf("%d- %s\n", (i + 1), products[i]);
 
-                                System.out.print("Choose an action:\n0: Go back\nn: Next page\np: Previous page\na number: Examine the product with the number\n\n");
+                                System.out.print("\nChoose an action:\n0: Go back\nn: Next page\np: Previous page\na number: Examine the product with the number\n\n");
                                 boolean flag2 = true;
                                 while (flag2) {
                                     System.out.print("Choice: ");
@@ -509,6 +507,11 @@ public class Seller extends User {
 
                                                         Product newProduct = new Product(products[target], username, price, stock);
                                                         productList.add(newProduct);
+                                                        getProduct(products[target]).add(newProduct);
+
+                                                        for (BinarySearchTree<Product> temp : getProducts())
+                                                            if (temp.getData() != null && temp.getData().getProductName().equals(products[target]))
+                                                                temp.add(newProduct);
 
                                                         i = pageStart;
                                                         flag2 = false;
@@ -590,9 +593,9 @@ public class Seller extends User {
     }
 
     public Product productAvailable(String productName) {
-        for (Product temp : productList)
-            if (temp.getProductName().equals(productName))
-                return temp;
+        for (int i = 0; i < productList.size(); ++i)
+            if (productList.get(i).getProductName().equals(productName))
+                return productList.get(i);
 
         return null;
     }
