@@ -357,7 +357,8 @@ public class Customer extends ECommerceSystem.User {
         if (bst == null) return;
         else{
             ascendingTraversal(bst.getLeftSubtree());
-            System.out.println("Seller: " + bst.getData().getSellerName() + " - Price: " + bst.getData().getPrice() + " - Stock: " + bst.getData().getStock());
+            if (bst.getData()!=null)
+                System.out.println("Seller: " + bst.getData().getSellerName() + " - Price: " + bst.getData().getPrice() + " - Stock: " + bst.getData().getStock());
             ascendingTraversal(bst.getRightSubtree());
         }
     }
@@ -366,7 +367,8 @@ public class Customer extends ECommerceSystem.User {
         if (bst == null) return;
         else{
             descendingTraversal(bst.getRightSubtree());
-            System.out.println("Seller: " + bst.getData().getSellerName() + " - Price: " + bst.getData().getPrice() + " - Stock: " + bst.getData().getStock());
+            if (bst.getData()!=null)
+                System.out.println("Seller: " + bst.getData().getSellerName() + " - Price: " + bst.getData().getPrice() + " - Stock: " + bst.getData().getStock());
             descendingTraversal(bst.getLeftSubtree());
         }
     }
