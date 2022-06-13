@@ -24,7 +24,7 @@ public class Customer extends ECommerceSystem.User {
 
     public Customer(String usernameValue, ECommerceSystem callerSystem) {
         super(usernameValue, callerSystem);
-
+        new File(systemRef.resourcesDir + "Customers").mkdir();
         try{
             File file = new File(systemRef.resourcesDir + "Customers/" + username + ".txt");
             if (file.exists()) {
@@ -83,27 +83,10 @@ public class Customer extends ECommerceSystem.User {
 
                 }
             }
-                        /*
-                            cüzdan
-                            sepet
-                            önceki siparişler
-                            şuanki siparişler
-                        */
-
-            /*
-                    100
-                    1
-                    laptop ikbal 10.0 15 3
-                    1
-                    laptop ikbal 10.0 15 3 0
-                    0
-            */
         } catch (Exception e) {
             System.out.println("Error during opening the file.");
             e.printStackTrace();
         }
-
-        new File(systemRef.resourcesDir + "Customers").mkdir();
     }
 
     private void exit(){
