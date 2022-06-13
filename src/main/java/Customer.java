@@ -55,8 +55,10 @@ public class Customer extends ECommerceSystem.User {
                     HashMap<Integer, Integer> orderSituations = getOrders();
                     int situation = orderSituations.get(id);
 
-                    if (situation != 0)
+                    if (situation != 0){
                         formerOrders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
+                        if (situation == -1) wallet += amount * price;
+                    }
                     else
                         orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
                 }
@@ -73,8 +75,10 @@ public class Customer extends ECommerceSystem.User {
                     HashMap<Integer, Integer> orderSituations = getOrders();
                     int situation = orderSituations.get(id);
 
-                    if (situation != 0)
+                    if (situation != 0){
                         formerOrders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
+                        if (situation == -1) wallet += amount * price;
+                    }
                     else
                         orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
 
