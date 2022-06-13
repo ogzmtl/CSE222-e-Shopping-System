@@ -55,8 +55,10 @@ public class Customer extends ECommerceSystem.User {
                     HashMap<Integer, Integer> orderSituations = getOrders();
                     int situation = orderSituations.get(id);
 
-                    if (situation != 0)
+                    if (situation != 0){
                         formerOrders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
+                        if (situation == -1) wallet += amount * price;
+                    }
                     else
                         orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
                 }
@@ -73,8 +75,10 @@ public class Customer extends ECommerceSystem.User {
                     HashMap<Integer, Integer> orderSituations = getOrders();
                     int situation = orderSituations.get(id);
 
-                    if (situation != 0)
+                    if (situation != 0){
                         formerOrders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
+                        if (situation == -1) wallet += amount * price;
+                    }
                     else
                         orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
 
@@ -304,12 +308,12 @@ public class Customer extends ECommerceSystem.User {
                     System.out.printf("Please enter the address: ");
                     String addr = scan.nextLine();
 
-                    int phone;
+                    Long phone = 0L;
                     boolean phoneFlag = true;
                     do{
                         try{
                             System.out.printf("Please enter the phone number: ");
-                            phone = scan.nextInt(); scan.nextLine();
+                            phone = scan.nextLong(); scan.nextLine();
                             phoneFlag = false;
                         }
                         catch (InputMismatchException e) {
@@ -328,9 +332,9 @@ public class Customer extends ECommerceSystem.User {
                     wallet -= sum;
                     for (Pair<Product, Integer> p : basket){
                         orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(p, new Pair<Integer, Integer>(getID(), 0)));
-                        //Seller seller = new Seller(p.getKey().getSellerName(), systemRef);
-                        //seller.addOrder(p, getID(), p.getValue(), username, (Integer)phone.toString(), addr);
-                        //seller.saveToFile();
+                        Seller seller = new Seller(p.getKey().getSellerName(), systemRef);
+                        seller.addOrder(p.getKey(), getID(), p.getValue(), username, phone.toString(), addr);
+                        seller.saveToFile();
                         updateOrders(getID(), 0);
                         incrementID();
                     }
