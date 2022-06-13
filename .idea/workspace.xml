@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="573025df-0264-44d1-a224-5c1f8cad9b23" name="Changes" comment="Changing Order class logic">
+    <list default="true" id="573025df-0264-44d1-a224-5c1f8cad9b23" name="Changes" comment="removed buya">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/ECommerceSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ECommerceSystem.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Seller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Seller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Sellers/ikbal.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Sellers/ikbal.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +100,7 @@
       <workItem from="1654897014107" duration="2606000" />
       <workItem from="1654965405630" duration="7868000" />
       <workItem from="1655030456313" duration="27928000" />
-      <workItem from="1655109112762" duration="9269000" />
+      <workItem from="1655109112762" duration="11335000" />
     </task>
     <task id="LOCAL-00001" summary="Updating the input files for the seller">
       <created>1651951663505</created>
@@ -160,7 +158,21 @@
       <option name="project" value="LOCAL" />
       <updated>1655052851658</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Prefinal edits to the seller class and added a customer folder">
+      <created>1655118623165</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1655118623165</updated>
+    </task>
+    <task id="LOCAL-00010" summary="removed buya">
+      <created>1655118726472</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1655118726472</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -198,6 +210,47 @@
     <MESSAGE value="Added a makefile" />
     <MESSAGE value="Initial update" />
     <MESSAGE value="Changing Order class logic" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changing Order class logic" />
+    <MESSAGE value="Prefinal edits to the seller class and added a customer folder" />
+    <MESSAGE value="removed buya" />
+    <option name="LAST_COMMIT_MESSAGE" value="removed buya" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
+          <line>107</line>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
+          <line>99</line>
+          <option name="timeStamp" value="35" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
+          <line>100</line>
+          <option name="timeStamp" value="36" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
+          <line>101</line>
+          <option name="timeStamp" value="37" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
+          <line>102</line>
+          <option name="timeStamp" value="38" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
+          <line>103</line>
+          <option name="timeStamp" value="40" />
+        </line-breakpoint>
+      </breakpoints>
+      <default-breakpoints>
+        <breakpoint enabled="true" type="java-exception" />
+      </default-breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
