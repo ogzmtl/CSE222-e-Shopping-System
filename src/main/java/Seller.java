@@ -579,18 +579,18 @@ public class Seller extends User {
                     }
 
                     else if (inputInt == 3) {
-                        while (true) {
-                            System.out.print("\n\nEnter the name of the new product: ");
-                            inputStr = scan.nextLine();
-                            if (getProduct(inputStr) != null)
-                                System.out.print("The product will be added to the pool when it's approved by the admins\n(Tap Enter to go back)");
+                        System.out.print("\n\nEnter the name of the new product, or 0 to go back: ");
+                        inputStr = scan.nextLine();
+                        if (inputStr.equals("0"))
+                            break;
 
-                            else
-                                break;
+                        else if (newProductRequest(inputStr))
+                            System.out.print("The product will be added to the pool when it's approved by the admins.\n(Tap Enter to go back)");
 
-                            newProductRequest(inputStr);
-                            scan.nextLine();
-                        }
+                        else
+                            System.out.print("This product already exists.\n(Tap Enter to go back)");
+
+                        scan.nextLine();
                     }
 
                     else {
