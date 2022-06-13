@@ -1,4 +1,4 @@
-Cactus Enes 10.0 5 
+Cactus
 Camera 
 Chess 
 Flower 

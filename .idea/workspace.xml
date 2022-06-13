@@ -3,10 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="573025df-0264-44d1-a224-5c1f8cad9b23" name="Changes" comment="Fixing file directories">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Customer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Seller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Seller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Orders.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Orders.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/Products.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Products.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/Sellers.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Sellers.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/Sellers/ikbal.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/Sellers/maharaja.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +108,7 @@
       <workItem from="1654897014107" duration="2606000" />
       <workItem from="1654965405630" duration="7868000" />
       <workItem from="1655030456313" duration="27928000" />
-      <workItem from="1655109112762" duration="35257000" />
+      <workItem from="1655109112762" duration="36257000" />
     </task>
     <task id="LOCAL-00001" summary="Updating the input files for the seller">
       <created>1651951663505</created>
@@ -220,7 +222,21 @@
       <option name="project" value="LOCAL" />
       <updated>1655147216948</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Fixing file directories">
+      <created>1655148363807</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1655148363807</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Fixing file directories">
+      <created>1655148434640</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1655148434640</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

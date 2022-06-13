@@ -102,6 +102,8 @@ public class Customer extends ECommerceSystem.User {
             System.out.println("Error during opening the file.");
             e.printStackTrace();
         }
+
+        new File(systemRef.resourcesDir + "Customers").mkdir();
     }
 
     private void exit(){
