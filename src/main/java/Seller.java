@@ -7,11 +7,12 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.*;
 
+import main.DataStructures.SkipList;
 import main.DataStructures.Trees.BinarySearchTree;
 import main.java.ECommerceSystem.*;
 
 public class Seller extends User {
-    protected class Order {
+    protected class Order implements Comparable<Order>{
         private String customer, address, phoneNum;
         private Product product;
         private int ID;
@@ -69,9 +70,14 @@ public class Seller extends User {
 
             return strb.toString();
         }
+
+        @Override
+        public int compareTo(Order order) {
+            return ID - order.ID;
+        }
     }
 
-    private LinkedList<Order> orderHistory;
+    private SkipList<Order> orderHistory;
     private Queue<Order> waitingOrders;
     private ArrayList<Product> productList;
 
@@ -79,7 +85,7 @@ public class Seller extends User {
             throws FileNotFoundException {
         super(username, callerSystem);
 
-        orderHistory = new LinkedList<>();
+        orderHistory = new SkipList<>();
         waitingOrders = new ArrayDeque<>();
         productList = new ArrayList<>();
 
@@ -121,21 +127,12 @@ public class Seller extends User {
                     String[] orders = buffer.split("\\|");
                     for (String orderString : orders) {
                         Order order = new Order(orderString);
-                        orderHistory.add(order);
+                        orderHistory.insert(order);
                     }
                 }
             }
         }
     }
-
-//    private String[] MaptoArray(Map<String, LinkedList<Product>> map) {
-//        ArrayList<String> products = new ArrayList<>(map.size());
-//        for (Map.Entry<String, LinkedList<Product>> temp : map.entrySet())
-//            if (productAvailable(temp.getKey()) == null)
-//                products.add(temp.getKey());
-//
-//        return products.toArray(new String[0]);
-//    }
 
     @Override
     public void UI(){
@@ -209,7 +206,7 @@ public class Seller extends User {
                                             inputStr = scan.nextLine();
                                             if (inputStr.equals("yes")) {
                                                 waitingOrders.peek().accept();
-                                                orderHistory.add(waitingOrders.poll());
+                                                orderHistory.insert(waitingOrders.poll());
                                                 orders = waitingOrders.toArray();
                                                 flag2 = false;
                                                 i = pageStart;
@@ -332,7 +329,7 @@ public class Seller extends User {
             else if (inputInt == 2){
                 //Product management
                 while (true) {
-                    System.out.print("\033[H\033[2JProduct Management:\n");
+                    System.out.print("\033[H\033[2JProduct Management:");
                     System.out.print("\nChoose an action:\n0- Go back.\n1- View your products.\n2- Add a new product from the pool.\n3- Send a new product request to the system.\n\n");
                     inputInt = getInputInt(scan, "Choice: ");
 
@@ -406,6 +403,7 @@ public class Seller extends User {
 
                                                 else if (inputInt == 1) {
                                                     productList.remove(target);
+                                                    getProduct(product.getProductName()).remove(product);
                                                     i = pageStart;
                                                     flag2 = false;
                                                     break;
@@ -591,7 +589,8 @@ public class Seller extends User {
 
         file.write("\n");
 
-        for (Order order : orderHistory)
+        Order[] old = orderHistory.toArray();
+        for (Order order : old)
             file.write(order + "|");
 
         file.close();
