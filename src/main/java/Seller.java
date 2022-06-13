@@ -41,6 +41,10 @@ public class Seller extends User {
             updateOrders(ID, 1);
         }
 
+        public void reject() {
+            updateOrders(ID, -1);
+        }
+
         public boolean setQuantity(int quantity) {
             if (quantity < 0 || quantity <= product.getStock() + this.quantity) {
                 product.setStock(product.getStock() + this.quantity - quantity);
@@ -164,6 +168,13 @@ public class Seller extends User {
                             boolean flag1 = true;
                             while (flag1) {
                                 System.out.print("\033[H\033[2JWaiting Orders:\n");
+
+                                if (waitingOrders.isEmpty()) {
+                                    System.out.print("There are no waiting orders.\n(Tap Enter to go back)");
+                                    scan.nextLine();
+                                    flag1 = false;
+                                }
+
                                 pageStart = i;
                                 System.out.printf("Page %d:\n", i / 8 + 1);
                                 for (; i < orders.length && i < pageStart + 8; ++i) {
@@ -207,11 +218,10 @@ public class Seller extends User {
                                         Order head = waitingOrders.peek();
                                         System.out.printf("\nOrder %d:\nProduct: %s\nQuantity: %d\nCustomer: %s\nAddress: %s\nPhone Number: %s",
                                                 head.ID, head.product.getProductName(), head.quantity, head.customer, head.address, head.phoneNum);
-                                        System.out.print("\nDo you want to confirm the order? (Answer with yes or no)\n\n");
+                                        System.out.print("\nChoose an action:\n0- Go back\n1- Approve\n2- Reject\n\n");
                                         while (true) {
-                                            System.out.print("Choice: ");
-                                            inputStr = scan.nextLine();
-                                            if (inputStr.equals("yes")) {
+                                            inputInt = getInputInt(scan, "Choice: ");
+                                            if (inputInt == 1) {
                                                 waitingOrders.peek().accept();
                                                 orderHistory.insert(waitingOrders.poll());
                                                 orders = waitingOrders.toArray();
@@ -220,11 +230,21 @@ public class Seller extends User {
                                                 break;
                                             }
 
-                                            else if (inputStr.equals("no")) {
+                                            if (inputInt == 2) {
+                                                waitingOrders.peek().reject();
+                                                orderHistory.insert(waitingOrders.poll());
+                                                orders = waitingOrders.toArray();
+                                                flag2 = false;
+                                                i = pageStart;
+                                                break;
+                                            }
+
+                                            else if (inputInt == 0) {
                                                 i = pageStart;
                                                 flag2 = false;
                                                 break;
                                             }
+
                                             System.out.print("\033[2A\r\033[JInvalid Input\n");
                                         }
                                     }
@@ -571,6 +591,10 @@ public class Seller extends User {
                             inputStr = scan.nextLine();
                             if (getProduct(inputStr) != null)
                                 System.out.print("The product will be added to the pool when it's approved by the admins\n(Tap Enter to go back)");
+
+                            else
+                                break;
+
                             scan.nextLine();
                         }
                     }
