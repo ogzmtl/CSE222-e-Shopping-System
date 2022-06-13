@@ -1,5 +1,6 @@
 package main.java;
 
+import main.DataStructures.Graph.*;
 import main.DataStructures.Trees.BinarySearchTree;
 import main.java.ECommerceSystem.*;
 
@@ -20,11 +21,13 @@ public class Customer extends ECommerceSystem.User {
     private LinkedList<Pair<Product, Integer>> basket = new LinkedList();
     private LinkedList<Pair<Pair<Product, Integer>, Pair<Integer, Integer>>> formerOrders = new LinkedList();
     private LinkedList<Pair<Pair<Product, Integer>, Pair<Integer, Integer>>> orders = new LinkedList();
+    private MatrixGraph graph= new MatrixGraph(getID(), true);
     private double wallet = 0.0;
 
     public Customer(String usernameValue, ECommerceSystem callerSystem) {
         super(usernameValue, callerSystem);
         new File(systemRef.resourcesDir + "Customers").mkdir();
+
         try{
             File file = new File(systemRef.resourcesDir + "Customers/" + username + ".txt");
             if (file.exists()) {
@@ -86,6 +89,12 @@ public class Customer extends ECommerceSystem.User {
         } catch (Exception e) {
             System.out.println("Error during opening the file.");
             e.printStackTrace();
+        }
+
+        for (int i = 0; i < getID() && i < orders.size(); ++i){
+            Pair<Pair<Product, Integer>, Pair<Integer, Integer>> newIndexElement = orders.get(i);
+            if (newIndexElement != null && newIndexElement.getValue().getValue() != -1)
+                graph.insert(new Edge(newIndexElement.getValue().getKey(), i));
         }
     }
 
