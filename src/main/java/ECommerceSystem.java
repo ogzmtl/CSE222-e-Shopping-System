@@ -9,7 +9,7 @@ import main.DataStructures.Trees.BinarySearchTree;
 
 @SuppressWarnings("unchecked")
 public class ECommerceSystem {
-	protected final String resourcesDir = "./src/main/resources/";
+	protected final String resourcesDir = System.getProperty("user.dir") + "/bin/main/resources/";
 	private Map<String, String> Sellers = new HashMap<>();
 	private Map<String, String> Customers = new HashMap<>();
 	private Map<String, String> Admins = new HashMap<>();
@@ -97,20 +97,16 @@ public class ECommerceSystem {
 			else throw new InvalidClassException("This user is not allowed in the system");
 		}
 
-		protected int getInputInt(Scanner scan, String message) {
-			System.out.print(message);
-			try {
-				return scan.nextInt();
-			} catch (Exception e) {
-				scan.nextLine();
-				System.out.print("\033[1A\r\033[JInvalid Input\n");
-				while (true) {
-					try {
-						return scan.nextInt();
-					} catch (Exception e2) {
-						scan.nextLine();
-						System.out.print("\033[2A\r\033[JInvalid Input\n");
-					}
+		protected int getInputInt(Scanner scan, String loopMsg) {
+			while (true) {
+				System.out.print(loopMsg);
+				try {
+					int in = scan.nextInt();
+					scan.nextLine();
+					return in;
+				} catch (InputMismatchException e2) {
+					scan.nextLine();
+					System.out.print("\033[2A\r\033[JInvalid Input\n");
 				}
 			}
 		}
