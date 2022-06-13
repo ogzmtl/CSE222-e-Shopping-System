@@ -582,7 +582,7 @@ public class ECommerceSystem {
 			writer.write(lastID + "\n");
 
 			for (Map.Entry<Integer, Integer> entry : UnproccessedOrders.entrySet()){
-				writer.write(entry.getKey() + entry.getValue() + "\n");
+				writer.write(entry.getKey() + " " + entry.getValue() + "\n");
 			}
 
 			writer.close();

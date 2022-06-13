@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 
 @SuppressWarnings("unchecked")
@@ -40,6 +41,44 @@ public class Customer extends ECommerceSystem.User {
                     int amount = Integer.parseInt(scan.next());
                     basket.add(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount));
                 }
+
+
+                int formerOrdersSize = Integer.parseInt(scan.next());
+                for (int i = 0; i < formerOrdersSize; ++i){
+                    String product = scan.next();
+                    String seller = scan.next();
+                    Double price = Double.parseDouble(scan.next());
+                    int stock = Integer.parseInt(scan.next());
+                    int amount = Integer.parseInt(scan.next());
+                    int id = Integer.parseInt(scan.next());
+
+                    HashMap<Integer, Integer> orderSituations = getOrders();
+                    int situation = orderSituations.get(id);
+
+                    if (situation != 0)
+                        formerOrders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
+                    else
+                        orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
+                }
+
+                int ordersSize = Integer.parseInt(scan.next());
+                for (int i = 0; i < ordersSize; ++i){
+                    String product = scan.next();
+                    String seller = scan.next();
+                    Double price = Double.parseDouble(scan.next());
+                    int stock = Integer.parseInt(scan.next());
+                    int amount = Integer.parseInt(scan.next());
+                    int id = Integer.parseInt(scan.next());
+
+                    HashMap<Integer, Integer> orderSituations = getOrders();
+                    int situation = orderSituations.get(id);
+
+                    if (situation != 0)
+                        formerOrders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
+                    else
+                        orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
+
+                }
             }
                         /*
                             cüzdan
@@ -47,6 +86,15 @@ public class Customer extends ECommerceSystem.User {
                             önceki siparişler
                             şuanki siparişler
                         */
+
+            /*
+                    100
+                    1
+                    laptop ikbal 10.0 15 3
+                    1
+                    laptop ikbal 10.0 15 3 0
+                    0
+            */
         } catch (Exception e) {
             System.out.println("Error during opening the file.");
             e.printStackTrace();
@@ -65,24 +113,17 @@ public class Customer extends ECommerceSystem.User {
 
             writer.write(formerOrders.size() + "\n");
             for (Pair<Pair<Product, Integer>, Pair<Integer, Integer>> p : formerOrders)
-                writer.write(p.getKey().getKey().getProductName() + " " + p.getKey().getKey() + " " + p.getKey().getValue() + " " + p.getValue().getKey() + " " + p.getValue().getValue() + "\n");
+                writer.write(p.getKey().getKey().getProductName() + " " + p.getKey().getKey() + " " + p.getKey().getValue() + " " + p.getValue().getKey() + "\n");
             
             writer.write(orders.size() + "\n");
             for (Pair<Pair<Product, Integer>, Pair<Integer, Integer>> p : orders)
-                writer.write(p.getKey().getKey().getProductName() + " " + p.getKey().getKey() + " " + p.getKey().getValue() + " " + p.getValue().getKey() + " " + p.getValue().getValue() + "\n");
+                writer.write(p.getKey().getKey().getProductName() + " " + p.getKey().getKey() + " " + p.getKey().getValue() + " " + p.getValue().getKey() + "\n");
 
             writer.close();
         }catch (Exception e){
             e.printStackTrace();
         }
-/*
-        100
-        1
-        laptop ikbal 10.0 15 3
-        1
-        laptop ikbal 10.0 15 3 0
-        0
-*/
+
     }
 
     private class Pair<K, V>{
@@ -259,6 +300,7 @@ public class Customer extends ECommerceSystem.User {
                 } else if (choice == 7){
                     System.out.println("Wallet: $" + wallet);
                 } else if (choice == 8){
+                    if (basket.isEmpty()){System.out.println("Your basket is empty."); continue;}
                     System.out.printf("Please enter the address: ");
                     String addr = scan.nextLine();
 
@@ -281,12 +323,12 @@ public class Customer extends ECommerceSystem.User {
                     }while(phoneFlag);
 
                     double sum = 0;
-                    for (Pair<Product, Integer> p : basket) sum += p.getKey().getPrice();
+                    for (Pair<Product, Integer> p : basket) sum += p.getKey().getPrice()*p.getValue();
                     if (sum > wallet){ System.out.println("There is no enough money at your wallet."); continue; }
-
+                    wallet -= sum;
                     for (Pair<Product, Integer> p : basket){
                         orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(p, new Pair<Integer, Integer>(getID(), 0)));
-                        Seller seller = new Seller(p.getKey().getSellerName(), systemRef);
+                        //Seller seller = new Seller(p.getKey().getSellerName(), systemRef);
                         //seller.addOrder(p, getID(), p.getValue(), username, (Integer)phone.toString(), addr);
                         //seller.saveToFile();
                         updateOrders(getID(), 0);
