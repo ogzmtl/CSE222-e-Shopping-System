@@ -576,8 +576,13 @@ public class Seller extends User {
         FileWriter file = new FileWriter(systemRef.resourcesDir + "Sellers/" + username + ".txt");
         file.write(username + "\n");
 
-        for (Product product : productList)
-            file.write(product.getProductName() + " ");
+        for (Product product : productList) {
+            try {
+                file.write(product.getProductName() + " ");
+            } catch (Exception e) {
+                System.out.print("A product not present in the system was detected\n(Not added to the file)\n");
+            }
+        }
 
         file.write("\n");
 
@@ -593,9 +598,9 @@ public class Seller extends User {
     }
 
     public Product productAvailable(String productName) {
-        for (int i = 0; i < productList.size(); ++i)
-            if (productList.get(i).getProductName().equals(productName))
-                return productList.get(i);
+        for (Product product : productList)
+            if (product.getProductName().equals(productName))
+                return product;
 
         return null;
     }
