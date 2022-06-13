@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="573025df-0264-44d1-a224-5c1f8cad9b23" name="Changes" comment="Fixing filing problems">
+    <list default="true" id="573025df-0264-44d1-a224-5c1f8cad9b23" name="Changes" comment="Implementing SkipList and integrating it in seller class">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/DataStructures/SkipList.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/DataStructures/SkipList.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ECommerceSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ECommerceSystem.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Seller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Seller.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/Driver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/Driver.java" afterDir="false" />
     </list>
@@ -105,7 +105,7 @@
       <workItem from="1654897014107" duration="2606000" />
       <workItem from="1654965405630" duration="7868000" />
       <workItem from="1655030456313" duration="27928000" />
-      <workItem from="1655109112762" duration="26180000" />
+      <workItem from="1655109112762" duration="29129000" />
     </task>
     <task id="LOCAL-00001" summary="Updating the input files for the seller">
       <created>1651951663505</created>
@@ -191,7 +191,14 @@
       <option name="project" value="LOCAL" />
       <updated>1655121824097</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Implementing SkipList and integrating it in seller class">
+      <created>1655135884537</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1655135884537</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -233,7 +240,8 @@
     <MESSAGE value="removed buya" />
     <MESSAGE value="Finishing order and product systems" />
     <MESSAGE value="Fixing filing problems" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixing filing problems" />
+    <MESSAGE value="Implementing SkipList and integrating it in seller class" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implementing SkipList and integrating it in seller class" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

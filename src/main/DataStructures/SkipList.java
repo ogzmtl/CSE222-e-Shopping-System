@@ -6,11 +6,12 @@ import java.util.Random;
 
 public class SkipList <E extends Comparable<E>> {
 	/** Static class to contain the data and the links */
-
 	static class SLNode<E> {
 		SLNode<E>[] links;
 		E data;
+
 		/** Create a node of level m */
+		@SuppressWarnings("unchecked")
 		SLNode (int m, E data) {
 			links = (SLNode<E>[]) Array.newInstance(this.getClass(), m); // create links
 			this.data = data; // store item
@@ -33,11 +34,12 @@ public class SkipList <E extends Comparable<E>> {
 	static final double LOG2 = Math.log(2.0);
 	static final Random rand = new Random();
 
-	/** Method to generate a logarithmic distributed integer between
-	 1 and maxLevel. i.e., 1/2 of the values returned are 1, 1/4
-	 are 2, 1/8 are 3, etc.
-	 @return a random logarithmic distributed int between 1 and
-	 maxLevel
+	/**
+	 * Method to generate a logarithmic distributed integer between
+	 * 1 and maxLevel. i.e., 1/2 of the values returned are 1, 1/4
+	 * are 2, 1/8 are 3, etc.
+	 * @return a random logarithmic distributed int between 1 and
+	 * maxLevel
 	 */
 	private int logRandom() {
 		int r = rand.nextInt(maxCap);
@@ -78,12 +80,13 @@ public class SkipList <E extends Comparable<E>> {
 		return ((int) Math.pow((double) 2, (double) maxlevel)) - 1;
 	}
 
-	@SuppressWarnings("unchecked")
-	/** Search for an item in the list
-	 @param item The item being sought
-	 @return A SLNode array which references the predecessors
-	 of the target at each level.
+	/**
+	 * Search for an item in the list
+	 * @param target The item being sought
+	 * @return A SLNode array which references the predecessors
+	 * of the target at each level.
 	 */
+	@SuppressWarnings("unchecked")
 	private SLNode<E>[] search (E target) {
 		SLNode<E>[] pred = (SLNode<E>[]) new SLNode[maxLevel];
 		SLNode<E> current = head;
@@ -97,10 +100,11 @@ public class SkipList <E extends Comparable<E>> {
 		return pred;
 	}
 
-	/** Find an object in the skip‐list
-	 @param target The item being sought
-	 @return A reference to the object in the skip‐list that matches
-	 the target. If not found, null is returned.
+	/**
+	 * Find an object in the skip‐list
+	 * @param target The item being sought
+	 * @return A reference to the object in the skip‐list that matches
+	 * the target. If not found, null is returned.
 	 */
 	public E find(E target) {
 		SLNode<E>[] pred = search(target);
@@ -116,6 +120,7 @@ public class SkipList <E extends Comparable<E>> {
 		return size == 0;
 	}
 
+	@SuppressWarnings("unchecked")
 	public E[] toArray() {
 		E[] result = (E[]) Array.newInstance(head.links[0].data.getClass(), size);
 		SLNode<E> current = head.links[0];

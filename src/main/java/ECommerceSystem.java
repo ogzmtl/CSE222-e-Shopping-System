@@ -110,6 +110,13 @@ public class ECommerceSystem {
 				}
 			}
 		}
+
+		protected boolean newProductRequest (String product) {
+			if (systemRef.products.containsKey(product))
+				return false;
+
+			return systemRef.Requests.add(new ProductRequest(product));
+		}
 	}
 
 	private void createBST() {

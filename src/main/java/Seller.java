@@ -337,7 +337,7 @@ public class Seller extends User {
                         break;
                     }
 
-                    if (inputInt == 1){
+                    else if (inputInt == 1) {
                         if (!productList.isEmpty()) {
                             boolean flag1 = true;
                             int i = 0, pageStart;
@@ -404,6 +404,13 @@ public class Seller extends User {
                                                 else if (inputInt == 1) {
                                                     productList.remove(target);
                                                     getProduct(product.getProductName()).remove(product);
+
+                                                    for (BinarySearchTree<Product> temp : getProducts())
+                                                        if (temp.getData() != null && temp.getData().getProductName().equals(product.getProductName())) {
+                                                            temp.remove(product);
+                                                            break;
+                                                        }
+
                                                     i = pageStart;
                                                     flag2 = false;
                                                     break;
@@ -427,7 +434,7 @@ public class Seller extends User {
                         }
                     }
 
-                    if (inputInt == 2){
+                    else if (inputInt == 2) {
                         String[] products = getProductsMap().keySet().toArray(new String[0]);
 
                         if (products.length != 0) {
@@ -487,7 +494,9 @@ public class Seller extends User {
                                                         i = pageStart;
                                                         flag2 = false;
                                                         break;
-                                                    } else if (inputInt == 1) {
+                                                    }
+
+                                                    else if (inputInt == 1) {
                                                         double price;
                                                         System.out.print("\n\n");
                                                         while (true) {
@@ -508,8 +517,10 @@ public class Seller extends User {
                                                         getProduct(products[target]).add(newProduct);
 
                                                         for (BinarySearchTree<Product> temp : getProducts())
-                                                            if (temp.getData() != null && temp.getData().getProductName().equals(products[target]))
+                                                            if (temp.getData() != null && temp.getData().getProductName().equals(products[target])) {
                                                                 temp.add(newProduct);
+                                                                break;
+                                                            }
 
                                                         i = pageStart;
                                                         flag2 = false;
@@ -545,6 +556,20 @@ public class Seller extends User {
                             System.out.print("You have no products.\n(Tap Enter to go back)");
                             scan.nextLine();
                         }
+                    }
+
+                    else if (inputInt == 3) {
+                        while (true) {
+                            System.out.print("\n\nEnter the name of the new product: ");
+                            inputStr = scan.nextLine();
+                            if (getProduct(inputStr) != null)
+                                System.out.print("The product will be added to the pool when it's approved by the admins\n(Tap Enter to go back)");
+                            scan.nextLine();
+                        }
+                    }
+
+                    else {
+                        System.out.println("Invalid choice, please try again.");
                     }
                 }
             }
