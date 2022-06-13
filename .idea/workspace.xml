@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="573025df-0264-44d1-a224-5c1f8cad9b23" name="Changes" comment="Fixing some file saving issues">
+    <list default="true" id="573025df-0264-44d1-a224-5c1f8cad9b23" name="Changes" comment="Finishing order and product systems">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ECommerceSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/ECommerceSystem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Products.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Products.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Seller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Seller.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -21,6 +27,10 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/main/java/ECommerceSystem.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Seller.java" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -36,22 +46,27 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../6" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../1901042803_HW8" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu-20.04\home\enesabdk\School Projects\Java\2.Year\2.Semester\Semester Project\CSE222-e-Shopping-System\src\main\resources\Sellers" />
+      <recent name="\\wsl$\Ubuntu-20.04\home\enesabdk\School Projects\Java\2.Year\2.Semester\Semester Project\CSE222-e-Shopping-System\resources" />
+      <recent name="\\wsl$\Ubuntu-20.04\home\enesabdk\School Projects\Java\2.Year\2.Semester\Semester Project\CSE222-e-Shopping-System\src" />
       <recent name="\\wsl$\Ubuntu-20.04\home\enesabdk\School Projects\Java\2.Year\2.Semester\Semester Project\CSE222-e-Shopping-System" />
       <recent name="\\wsl$\Ubuntu-20.04\home\enesabdk\School Projects\Java\2.Year\2.Semester\Semester Project\CSE222-e-Shopping-System\Sellers" />
-      <recent name="\\wsl$\Ubuntu-20.04\home\enesabdk\School Projects\Java\2.Year\2.Semester\Semester Project\CSE222-e-Shopping-System\src" />
-      <recent name="\\wsl$\Ubuntu-20.04\home\enesabdk\School Projects\Java\2.Year\2.Semester\Semester Project\CSE222-e-Shopping-System\src\ressources" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="" />
     </key>
   </component>
   <component name="RunManager">
-    <configuration name="test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="test" />
+    <configuration name="Driver" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="test.Driver" />
       <module name="CSE222-e-Shopping-System" />
       <option name="VM_PARAMETERS" value="-Djava.net.preferIPv4Stack=true" />
       <method v="2">
@@ -60,7 +75,7 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.test" />
+        <item itemvalue="Application.Driver" />
       </list>
     </recent_temporary>
   </component>
@@ -76,6 +91,16 @@
       <workItem from="1651922882482" duration="4025000" />
       <workItem from="1651951359502" duration="56000" />
       <workItem from="1651951452297" duration="8173000" />
+      <workItem from="1652785696240" duration="8046000" />
+      <workItem from="1652802507701" duration="595000" />
+      <workItem from="1652924427030" duration="1536000" />
+      <workItem from="1653134079268" duration="116000" />
+      <workItem from="1654792624002" duration="4004000" />
+      <workItem from="1654885526781" duration="4567000" />
+      <workItem from="1654897014107" duration="2606000" />
+      <workItem from="1654965405630" duration="7868000" />
+      <workItem from="1655030456313" duration="27928000" />
+      <workItem from="1655109112762" duration="12466000" />
     </task>
     <task id="LOCAL-00001" summary="Updating the input files for the seller">
       <created>1651951663505</created>
@@ -91,7 +116,70 @@
       <option name="project" value="LOCAL" />
       <updated>1651952632952</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Testing branch">
+      <created>1652786089723</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1652786089723</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Classes separated, and some file management was done.">
+      <created>1652798996203</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1652798996203</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Classes separated, and some file management was done.">
+      <created>1652799077455</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1652799077455</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Added a makefile">
+      <created>1652799640546</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1652799640546</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Initial update">
+      <created>1654975800340</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1654975800340</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Changing Order class logic">
+      <created>1655052851658</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1655052851658</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Prefinal edits to the seller class and added a customer folder">
+      <created>1655118623165</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1655118623165</updated>
+    </task>
+    <task id="LOCAL-00010" summary="removed buya">
+      <created>1655118726472</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1655118726472</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Finishing order and product systems">
+      <created>1655120604714</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1655120604714</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -102,7 +190,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/Multifile-Edition" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -111,17 +211,54 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Updating the input files for the seller" />
     <MESSAGE value="Fixing some file saving issues" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixing some file saving issues" />
+    <MESSAGE value="Testing branch" />
+    <MESSAGE value="Classes separated, and some file management was done" />
+    <MESSAGE value="Classes separated, and some file management was done." />
+    <MESSAGE value="Added a makefile" />
+    <MESSAGE value="Initial update" />
+    <MESSAGE value="Changing Order class logic" />
+    <MESSAGE value="Prefinal edits to the seller class and added a customer folder" />
+    <MESSAGE value="removed buya" />
+    <MESSAGE value="Finishing order and product systems" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finishing order and product systems" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/ECommerceSystem.java</url>
-          <line>183</line>
-          <option name="timeStamp" value="11" />
+          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
+          <line>107</line>
+          <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
+          <line>99</line>
+          <option name="timeStamp" value="35" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
+          <line>100</line>
+          <option name="timeStamp" value="36" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
+          <line>101</line>
+          <option name="timeStamp" value="37" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
+          <line>102</line>
+          <option name="timeStamp" value="38" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
+          <line>103</line>
+          <option name="timeStamp" value="40" />
         </line-breakpoint>
       </breakpoints>
+      <default-breakpoints>
+        <breakpoint enabled="true" type="java-exception" />
+      </default-breakpoints>
     </breakpoint-manager>
   </component>
 </project>

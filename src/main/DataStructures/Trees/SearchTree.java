@@ -1,4 +1,4 @@
-package sourcepackage;
+package main.DataStructures.Trees;
 //SearchTree interface
 public interface SearchTree<E>{
 	/**
