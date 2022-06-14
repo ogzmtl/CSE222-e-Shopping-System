@@ -1,7 +1,13 @@
 package main.DataStructures.Trees;
+
+/**
+ * Binary Search Tree class
+ */
 @SuppressWarnings("unchecked")
 public class BinarySearchTree<E> extends BinaryTree<E> implements SearchTree<E>{
+	/** Boolean value indicates if addition is successful*/
 	protected boolean adder;
+	/** Deleted element */
 	protected E deleter;
 
 	/**
@@ -13,6 +19,10 @@ public class BinarySearchTree<E> extends BinaryTree<E> implements SearchTree<E>{
 		deleter = null;
 	}
 
+	/**
+	 * Constructor for the binary search tree
+	 * @param root Root of the tree
+	 */
 	public BinarySearchTree(Node<E> root){
 		super(root);
 	}

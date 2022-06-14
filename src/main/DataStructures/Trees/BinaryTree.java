@@ -1,12 +1,23 @@
 package main.DataStructures.Trees;
 import java.io.*;
 import java.util.*;
+/** Binary Tree class */
 public class BinaryTree<E> implements Serializable{
+	/**
+	 * Inner node class that represents elements of the tree
+	 */	
 	protected static class Node<E> implements Serializable{
+		/** Data of the node */
 		protected E data;
+		/** Left of the current node */
 		protected Node<E> left;
+		/** Right of the current node */
 		protected Node<E> right;
 
+		/**
+		 * Constructor for the node
+		 * @param data Data of the node
+		 */
 		public Node(E data){
 			this.data = data;
 			left = null;
@@ -18,6 +29,7 @@ public class BinaryTree<E> implements Serializable{
 		}
 	}
 
+	/** Root node of the tree */
 	protected Node<E> root;
 
 	/**
@@ -27,12 +39,19 @@ public class BinaryTree<E> implements Serializable{
 		root = null;
 	}
 
+	/**
+	 * Constructor for the binary tree
+	 * @param root Root of the tree
+	 */
 	protected BinaryTree(Node<E> root){
 		this.root = root;
 	}
 
 	/**
 	 * Constructor to start the tree with given left tree, right tree, and the root data
+	 * @param data Data of the root node
+	 * @param leftTree left tree of the root node
+	 * @param rightTree right tree of the root node
 	 */
 	public BinaryTree(E data, BinaryTree<E> leftTree, BinaryTree<E> rightTree){
 		root = new Node<E>(data);
@@ -105,6 +124,8 @@ public class BinaryTree<E> implements Serializable{
 
 	/**
 	 * Reads binary tree from given scanner
+	 * @param scan Scanner object
+	 * @return Returns new BinaryTree
 	 */
 	public static BinaryTree<String> readBinaryTree(Scanner scan){
 		String data = scan.next();

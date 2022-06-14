@@ -1,5 +1,5 @@
 package main.DataStructures.Trees;
-//SearchTree interface
+/** SearchTree interface */
 public interface SearchTree<E>{
 	/**
 	 * add method to add given element to the tree.

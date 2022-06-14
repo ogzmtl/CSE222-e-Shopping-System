@@ -2,7 +2,6 @@ package main.DataStructures.Graph;
 import java.util.Comparator;
 /** An Edge represents a relationship between two
  *  vertices.
- *  @author Koffman and Wolfgang
 */
 public class Edge  implements Comparator < Edge > {
     /**** BEGIN EXERCISE ****/
@@ -20,8 +19,8 @@ public class Edge  implements Comparator < Edge > {
     /** Construct an Edge with a source of from
         and a destination of to. Set the weight
         to 1.0.
-        @param from - The source vertix
-        @param to - The destination vertix
+        @param source - The source vertix
+        @param dest - The destination vertix
      */
     public Edge(int source, int dest) {
       this.source = source;
@@ -32,8 +31,8 @@ public class Edge  implements Comparator < Edge > {
     /** Construct a weighted edge with a source
         of from and a destination of to. Set the
         weight to w.
-        @param from - The source vertix
-        @param to - The destination vertix
+        @param source - The source vertix
+        @param dest - The destination vertix
         @param w - The weight
      */
     public Edge(int source, int dest, double w) {
@@ -106,8 +105,8 @@ public class Edge  implements Comparator < Edge > {
     }
 
     public int compare(Edge e1, Edge e2) {
-    	  return Double.compare(e1.getWeight(), e2.getWeight());
-    	}
+          return Double.compare(e1.getWeight(), e2.getWeight());
+        }
     
     /**** END EXERCISE ****/
   }

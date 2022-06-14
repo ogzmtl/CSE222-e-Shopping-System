@@ -4,6 +4,9 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Random;
 
+/**
+ * SkipList data structure's class
+ */
 public class SkipList <E extends Comparable<E>> {
 	/** Static class to contain the data and the links */
 	static class SLNode<E> {
@@ -23,6 +26,7 @@ public class SkipList <E extends Comparable<E>> {
 	int maxCap;
 	int size;
 
+	/** No parameter constructor */
 	public SkipList() {
 		head = new SLNode<>(1, null);
 		maxLevel = 1;
@@ -50,6 +54,10 @@ public class SkipList <E extends Comparable<E>> {
 		return maxLevel - k;
 	}
 
+	/**
+	 * Insert given data to the skip list
+	 * @param data Data to be inserted
+	 */
 	public void insert (E data) {
 		SLNode<E>[] pred = search(data);
 
@@ -116,10 +124,18 @@ public class SkipList <E extends Comparable<E>> {
 		}
 	}
 
+	/**
+	 * Checks if skip list is empty or not
+	 * @return boolean value to represent empty skip list
+	 */
 	public boolean isEmpty () {
 		return size == 0;
 	}
 
+	/**
+	 * Method to convert skip list to an array
+	 * @return Array representation of the skip list
+	 */
 	@SuppressWarnings("unchecked")
 	public E[] toArray() {
 		if (size == 0)

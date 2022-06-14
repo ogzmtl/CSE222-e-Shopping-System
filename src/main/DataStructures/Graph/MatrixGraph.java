@@ -7,7 +7,6 @@ import java.util.Iterator;
 /** A MatrixGraph is an implementation of the Graph
 *   abstract class that uses an array to represent the
 *   edges.
-*   @author Koffman and Wolfgang
 */
 
 public class MatrixGraph {
@@ -24,8 +23,8 @@ public class MatrixGraph {
       @param directed - The directionality flag
    */
   public MatrixGraph(int numV, boolean directed) {
-	    this.numV = numV;
-	    this.directed = directed;
+      this.numV = numV;
+      this.directed = directed;
     edges = new double[numV][];
     if (!directed) {
       for (int i = 0; i != numV; ++i) {
@@ -185,14 +184,6 @@ public class MatrixGraph {
 
   /** Flag to indicate whether this is a directed graph */
   private boolean directed;
-
-  // Constructor
-  /** Construct a graph with the specified number of vertices
-      and the directed flag. If the directed flag is true,
-      this is a directed graph.
-      @param numV The number of vertices
-      @param directed The directed flag
-   */
 
   // Accessor Methods
   /** Return the number of vertices.
