@@ -1,4 +1,4 @@
-Cactus hu 10.0 12 
+Cactus
 Camera 
 Chess 
 Flower 
@@ -9,5 +9,5 @@ Phone
 Piano 
 T-shirt 
 apple 
-buya bu 100.9 1234 
+buya
 spider 
