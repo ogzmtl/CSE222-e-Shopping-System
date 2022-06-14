@@ -144,6 +144,10 @@ public class ECommerceSystem {
 			return systemRef.productsOrdered;
 		}
 
+		protected void updateBST(){
+			systemRef.createBST();
+		}
+
 		/**
 		 * Password changer for users
 		 * @param newPass New password
