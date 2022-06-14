@@ -86,7 +86,6 @@ public class Customer extends ECommerceSystem.User {
                     int id = Integer.parseInt(scan.next());
 
                     HashMap<Integer, Integer> orderSituations = getOrders();
-                    System.out.println(id);
                     int situation = orderSituations.get(id);
 
                     if (situation != 0){
