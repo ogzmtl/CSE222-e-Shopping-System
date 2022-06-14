@@ -8,13 +8,23 @@ import main.DataStructures.SkipList;
 import main.DataStructures.Trees.BinarySearchTree;
 import main.java.ECommerceSystem.*;
 
+/**
+ * Class to represent Sellers in the system
+ */
 public class Seller extends User {
+    /**
+     * Inner class to control orders
+     */
     protected class Order implements Comparable<Order>{
         private String customer, address, phoneNum;
         private Product product;
         private int ID;
         private int quantity;
 
+        /**
+         * Constructor for order
+         * @param orderString String representation of the order
+         */
         public Order(String orderString) {
             String[] temp = orderString.split(" ");
             ID = Integer.parseInt(temp[0]);
@@ -25,6 +35,15 @@ public class Seller extends User {
             address = temp[5];
         }
 
+        /**
+         * Constructor for order
+         * @param product Product to be ordered
+         * @param ID ID of the product
+         * @param quantity Quantity of the product
+         * @param customer Customer who have bought the product
+         * @param phoneNum Phone number of the customer
+         * @param address Address of the customer
+         */
         public Order(Product product, int ID, int quantity, String customer, String phoneNum, String address) {
             if (product == null || customer == null || phoneNum == null || address  == null)
                 throw new InvalidParameterException();
@@ -37,14 +56,25 @@ public class Seller extends User {
             this.phoneNum = phoneNum;
         }
 
+        /**
+         * Method to accept the order
+         */
         public void accept() {
             updateOrders(ID, 1);
         }
 
+        /**
+         * Method to reject the order
+         */
         public void reject() {
             updateOrders(ID, -1);
         }
 
+        /**
+         * Setter for quantity of the product
+         * @param quantity Quantity of the product
+         * @return boolean value if there is enough stock
+         */
         public boolean setQuantity(int quantity) {
             if (quantity < 0 || quantity <= product.getStock() + this.quantity) {
                 product.setStock(product.getStock() + this.quantity - quantity);
@@ -55,6 +85,10 @@ public class Seller extends User {
             return false;
         }
 
+        /**
+         * Overridden toString method
+         * @return String representation of the Order
+         */
         @Override
         public String toString() {
             StringBuilder strb = new StringBuilder();
@@ -72,6 +106,11 @@ public class Seller extends User {
             return strb.toString();
         }
 
+        /**
+         * Method to compare orders by their IDs
+         * @param order Other order that will be compared
+         * @return Integer value to represent relation between other order and "this" order
+         */
         @Override
         public int compareTo(Order order) {
             return ID - order.ID;
@@ -82,6 +121,11 @@ public class Seller extends User {
     private Queue<Order> waitingOrders;
     private ArrayList<Product> productList;
 
+    /**
+     * Constructor for Seller
+     * @param username Username of the seller
+     * @param callerSystem System which the seller belongs to
+     */
     public Seller(String username, ECommerceSystem callerSystem) {
         super(username, callerSystem);
 
@@ -145,6 +189,9 @@ public class Seller extends User {
             new File(systemRef.resourcesDir + "Sellers").mkdir();
     }
 
+    /**
+     * User interface of the Seller, overridden from abstract User class
+     */
     @Override
     public void UI(){
         int inputInt = 0;
@@ -616,6 +663,10 @@ public class Seller extends User {
         }
     }
 
+    /**
+     * Method to save informations to the file
+     * @throws IOException to avoid any crash
+     */
     public void saveToFile() throws IOException {
         new File(systemRef.resourcesDir + "Sellers").mkdir();
         FileWriter file = new FileWriter(systemRef.resourcesDir + "Sellers/" + username + ".txt");
@@ -639,6 +690,11 @@ public class Seller extends User {
         file.close();
     }
 
+    /**
+     * Method to see if given product is in the productList or not
+     * @param productName Name of the product
+     * @return Returns product whose name is given in the parameters
+     */
     public Product productAvailable(String productName) {
         for (Product product : productList)
             if (product.getProductName().equals(productName))
@@ -647,6 +703,15 @@ public class Seller extends User {
         return null;
     }
 
+    /**
+     * Method to add order to the waiting orders
+     * @param product Product to be ordered
+     * @param ID ID of the product
+     * @param quantity Quantity of the product
+     * @param customer Customer who have bought the product
+     * @param phoneNum Phone number of the customer
+     * @param address Address of the customer
+     */
     public void addOrder (Product product, int ID, int quantity, String customer, String phoneNum, String address) {
         waitingOrders.add(new Order(product, ID, quantity, customer, phoneNum, address));
     }
