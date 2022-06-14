@@ -52,7 +52,7 @@ public class Customer extends ECommerceSystem.User {
                     Double price = Double.parseDouble(scan.next());
                     int stock = Integer.parseInt(scan.next());
                     int amount = Integer.parseInt(scan.next());
-                    basket.add(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount));
+                    basket.add(new Pair<Product, Integer>(getProduct(product, seller), amount));
                 }
 
                 //Read former orders from the file
@@ -69,10 +69,10 @@ public class Customer extends ECommerceSystem.User {
                     int situation = orderSituations.get(id);
 
                     if (situation != 0){
-                        formerOrders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
+                        formerOrders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(getProduct(product,seller), amount), new Pair<Integer, Integer>(id, situation)));
                     }
                     else
-                        orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
+                        orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(getProduct(product,seller), amount), new Pair<Integer, Integer>(id, situation)));
                 }
 
                 //Read orders from the file
@@ -86,14 +86,15 @@ public class Customer extends ECommerceSystem.User {
                     int id = Integer.parseInt(scan.next());
 
                     HashMap<Integer, Integer> orderSituations = getOrders();
+                    System.out.println(id);
                     int situation = orderSituations.get(id);
 
                     if (situation != 0){
-                        formerOrders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
+                        formerOrders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(getProduct(product,seller), amount), new Pair<Integer, Integer>(id, situation)));
                         if (situation == -1) wallet += amount * price;
                     }
                     else
-                        orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
+                        orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(getProduct(product,seller), amount), new Pair<Integer, Integer>(id, situation)));
 
                 }
             }
@@ -378,12 +379,15 @@ public class Customer extends ECommerceSystem.User {
                     if (sum > wallet){ System.out.println("There is no enough money at your wallet."); continue; }
                     wallet -= sum;
                     for (Pair<Product, Integer> p : basket){
-                        orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(p, new Pair<Integer, Integer>(getID(), 0)));
+                        
                         Seller seller = new Seller(p.getKey().getSellerName(), systemRef);
-                        seller.addOrder(p.getKey(), getID(), p.getValue(), username, phone.toString(), addr);
-                        seller.saveToFile();
-                        updateOrders(getID(), 0);
-                        incrementID();
+                        if (seller.addOrder(p.getKey(), getID(), p.getValue(), username, phone.toString(), addr)){
+                            orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(p, new Pair<Integer, Integer>(getID(), 0)));
+                            seller.saveToFile();
+                            updateOrders(getID(), 0);
+                            incrementID();
+                        }
+                        else wallet += p.getKey().getPrice()*p.getValue();
                     }
                     basket.clear();
                 }

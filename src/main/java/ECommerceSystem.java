@@ -207,7 +207,7 @@ public class ECommerceSystem {
 		for (Map.Entry<String, LinkedList<Product>> entry : products.entrySet()) {
 			productsOrdered.add(new BinarySearchTree());
 			LinkedList<Product> temp = entry.getValue();
-			for (Product product : temp) productsOrdered.get(productsOrdered.size() - 1).add(product.clone());
+			for (Product product : temp) productsOrdered.get(productsOrdered.size() - 1).add(product);
 		}
 	}
 

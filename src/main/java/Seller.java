@@ -717,8 +717,13 @@ public class Seller extends User {
      * @param phoneNum Phone number of the customer
      * @param address Address of the customer
      */
-    public void addOrder (Product product, int ID, int quantity, String customer, String phoneNum, String address) {
+    public boolean addOrder (Product product, int ID, int quantity, String customer, String phoneNum, String address) {
+        if (product.getStock() - quantity < 0){
+            System.out.println("There is no enough stock.");
+            return false;
+        }
         waitingOrders.add(new Order(product, ID, quantity, customer, phoneNum, address));
         product.setStock(product.getStock() - quantity);
+        return true;
     }
 }
