@@ -148,11 +148,13 @@ public class Seller extends User {
                 // The list of products
                 if (reader.hasNext()) {
                     buffer = reader.nextLine();
-                    String[] products = buffer.split(" ");
-                    for (String productName : products) {
-                        Product target = getProduct(productName, username);
-                        if (target != null)
-                            productList.add(target);
+                    if (!buffer.isEmpty()) {
+                        String[] products = buffer.split(" ");
+                        for (String productName : products) {
+                            Product target = getProduct(productName, username);
+                            if (target != null)
+                                productList.add(target);
+                        }
                     }
                 }
 
