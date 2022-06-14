@@ -582,12 +582,13 @@ public class Seller extends User {
                                                         Product newProduct = new Product(products[target], username, price, stock);
                                                         productList.add(newProduct);
                                                         getProduct(products[target]).add(newProduct);
-
+/*
                                                         for (BinarySearchTree<Product> temp : getProducts())
                                                             if (temp.getData() != null && temp.getData().getProductName().equals(products[target])) {
                                                                 temp.add(newProduct);
                                                                 break;
                                                             }
+  */                                                      updateBST();
 
                                                         i = pageStart;
                                                         flag2 = false;
