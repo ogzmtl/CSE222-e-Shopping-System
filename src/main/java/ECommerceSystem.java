@@ -690,8 +690,11 @@ public class ECommerceSystem {
 	 */
 	private void removeProduct(String productName) {
 		if (products.containsKey(productName)) {
-			products.remove(productName);
-			createBST();
+			if (products.get(productName).size() == 0){
+				products.remove(productName);
+				createBST();
+			}
+			else System.out.println("There is/are seller(s) for this product.");
 		} else System.out.println("This product doesn't exist.");
 	}
 
