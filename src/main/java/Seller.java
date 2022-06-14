@@ -279,9 +279,11 @@ public class Seller extends User {
                                         }
 
                                         if (inputInt == 2) {
-                                            waitingOrders.peek().reject();
-                                            orderHistory.insert(waitingOrders.poll());
+                                            Order target = waitingOrders.poll();
+                                            target.reject();
+                                            orderHistory.insert(target);
                                             orders = waitingOrders.toArray();
+                                            target.product.setStock(target.product .getStock() + target.quantity);
                                             flag2 = false;
                                             i = pageStart;
                                             break;
@@ -717,5 +719,6 @@ public class Seller extends User {
      */
     public void addOrder (Product product, int ID, int quantity, String customer, String phoneNum, String address) {
         waitingOrders.add(new Order(product, ID, quantity, customer, phoneNum, address));
+        product.setStock(product.getStock() - quantity);
     }
 }

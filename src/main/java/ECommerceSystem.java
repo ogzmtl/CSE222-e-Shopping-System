@@ -40,8 +40,8 @@ public class ECommerceSystem {
 		 * @param userNameValue Username of the user
 		 * @param callerSystem System that the user belongs to
 		 */
-		User(String usernameValue, ECommerceSystem callerSystem){
-			username = usernameValue;
+		User(String userNameValue, ECommerceSystem callerSystem){
+			username = userNameValue;
 			systemRef = callerSystem;
 		}
 

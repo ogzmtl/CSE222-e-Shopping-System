@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="573025df-0264-44d1-a224-5c1f8cad9b23" name="Changes" comment="Fixing product requests in Seller class">
+    <list default="true" id="573025df-0264-44d1-a224-5c1f8cad9b23" name="Changes" comment="Final edits">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ECommerceSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ECommerceSystem.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Seller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Seller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Orders.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Orders.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Products.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Products.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Sellers.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Sellers.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,7 +37,6 @@
     <setting file="file://$PROJECT_DIR$/src/main/java/Customer.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/resources/Products.txt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/resources/Sellers.txt" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/main/resources/Sellers/hu.txt" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/.gitignore" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/resources/Admins.txt" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -115,7 +112,7 @@
       <workItem from="1654965405630" duration="7868000" />
       <workItem from="1655030456313" duration="27928000" />
       <workItem from="1655109112762" duration="42091000" />
-      <workItem from="1655228812501" duration="337000" />
+      <workItem from="1655228812501" duration="1739000" />
     </task>
     <task id="LOCAL-00001" summary="Updating the input files for the seller">
       <created>1651951663505</created>
@@ -278,7 +275,21 @@
       <option name="project" value="LOCAL" />
       <updated>1655154454052</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Final edits">
+      <created>1655229171231</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1655229171231</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Final edits">
+      <created>1655229241358</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1655229241358</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -326,7 +337,8 @@
     <MESSAGE value="Fixing file directories" />
     <MESSAGE value="Fixing menu issues in the Seller class" />
     <MESSAGE value="Fixing product requests in Seller class" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixing product requests in Seller class" />
+    <MESSAGE value="Final edits" />
+    <option name="LAST_COMMIT_MESSAGE" value="Final edits" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
