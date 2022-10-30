@@ -1,22 +1,30 @@
 package main.java;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.security.InvalidParameterException;
 import java.util.*;
 
+import main.DataStructures.SkipList;
 import main.DataStructures.Trees.BinarySearchTree;
 import main.java.ECommerceSystem.*;
 
+/**
+ * Class to represent Sellers in the system
+ */
 public class Seller extends User {
-    protected class Order {
+    /**
+     * Inner class to control orders
+     */
+    protected class Order implements Comparable<Order>{
         private String customer, address, phoneNum;
         private Product product;
         private int ID;
         private int quantity;
 
+        /**
+         * Constructor for order
+         * @param orderString String representation of the order
+         */
         public Order(String orderString) {
             String[] temp = orderString.split(" ");
             ID = Integer.parseInt(temp[0]);
@@ -27,6 +35,15 @@ public class Seller extends User {
             address = temp[5];
         }
 
+        /**
+         * Constructor for order
+         * @param product Product to be ordered
+         * @param ID ID of the product
+         * @param quantity Quantity of the product
+         * @param customer Customer who have bought the product
+         * @param phoneNum Phone number of the customer
+         * @param address Address of the customer
+         */
         public Order(Product product, int ID, int quantity, String customer, String phoneNum, String address) {
             if (product == null || customer == null || phoneNum == null || address  == null)
                 throw new InvalidParameterException();
@@ -39,10 +56,25 @@ public class Seller extends User {
             this.phoneNum = phoneNum;
         }
 
+        /**
+         * Method to accept the order
+         */
         public void accept() {
             updateOrders(ID, 1);
         }
 
+        /**
+         * Method to reject the order
+         */
+        public void reject() {
+            updateOrders(ID, -1);
+        }
+
+        /**
+         * Setter for quantity of the product
+         * @param quantity Quantity of the product
+         * @return boolean value if there is enough stock
+         */
         public boolean setQuantity(int quantity) {
             if (quantity < 0 || quantity <= product.getStock() + this.quantity) {
                 product.setStock(product.getStock() + this.quantity - quantity);
@@ -53,6 +85,10 @@ public class Seller extends User {
             return false;
         }
 
+        /**
+         * Overridden toString method
+         * @return String representation of the Order
+         */
         @Override
         public String toString() {
             StringBuilder strb = new StringBuilder();
@@ -69,74 +105,95 @@ public class Seller extends User {
 
             return strb.toString();
         }
+
+        /**
+         * Method to compare orders by their IDs
+         * @param order Other order that will be compared
+         * @return Integer value to represent relation between other order and "this" order
+         */
+        @Override
+        public int compareTo(Order order) {
+            return ID - order.ID;
+        }
     }
 
-    private LinkedList<Order> orderHistory;
+    private SkipList<Order> orderHistory;
     private Queue<Order> waitingOrders;
     private ArrayList<Product> productList;
 
-    public Seller(String username, ECommerceSystem callerSystem)
-            throws FileNotFoundException {
+    /**
+     * Constructor for Seller
+     * @param username Username of the seller
+     * @param callerSystem System which the seller belongs to
+     */
+    public Seller(String username, ECommerceSystem callerSystem) {
         super(username, callerSystem);
 
-        orderHistory = new LinkedList<>();
+        orderHistory = new SkipList<>();
         waitingOrders = new ArrayDeque<>();
         productList = new ArrayList<>();
 
         File file = new File(systemRef.resourcesDir + "Sellers/" + username + ".txt");
         if (file.exists()) {
-            Scanner reader = new Scanner(file);
-            String buffer = reader.nextLine();
-            Product targetProduct;
+            try {
+                Scanner reader = new Scanner(file);
+                String buffer = reader.nextLine();
+                Product targetProduct;
 
-            // Check that the file is not corrupted
-            // Each file must start with the name of the seller
-            if (!buffer.contains(username)) {
-                file.renameTo(new File(username + "_damaged.txt"));
-                throw new FileNotFoundException("The file found was damaged");
-            }
+                // Check that the file is not corrupted
+                // Each file must start with the name of the seller
+                if (!buffer.contains(username))
+                    throw new StreamCorruptedException();
 
-            // The list of products
-            if (reader.hasNext()){
-                buffer = reader.nextLine();
-                String[] products = buffer.split(" ");
-                for (String productName : products)
-                    productList.add(getProduct(productName, username));
-            }
-
-            // The list of waiting orders
-            if (reader.hasNext()) {
-                buffer = reader.nextLine();
-                if (!buffer.isEmpty()) {
-                    String[] orders = buffer.split("\\|");
-                    for (String orderString : orders)
-                        waitingOrders.add(new Order(orderString));
-                }
-            }
-
-            // The list of past orders
-            if (reader.hasNext()) {
-                buffer = reader.nextLine();
-                if (!buffer.isEmpty()) {
-                    String[] orders = buffer.split("\\|");
-                    for (String orderString : orders) {
-                        Order order = new Order(orderString);
-                        orderHistory.add(order);
+                // The list of products
+                if (reader.hasNext()) {
+                    buffer = reader.nextLine();
+                    if (!buffer.isEmpty()) {
+                        String[] products = buffer.split(" ");
+                        for (String productName : products) {
+                            Product target = getProduct(productName, username);
+                            if (target != null)
+                                productList.add(target);
+                        }
                     }
                 }
+
+                // The list of waiting orders
+                if (reader.hasNext()) {
+                    buffer = reader.nextLine();
+                    if (!buffer.isEmpty()) {
+                        String[] orders = buffer.split("\\|");
+                        for (String orderString : orders)
+                            waitingOrders.add(new Order(orderString));
+                    }
+                }
+
+                // The list of past orders
+                if (reader.hasNext()) {
+                    buffer = reader.nextLine();
+                    if (!buffer.isEmpty()) {
+                        String[] orders = buffer.split("\\|");
+                        for (String orderString : orders) {
+                            Order order = new Order(orderString);
+                            orderHistory.insert(order);
+                        }
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                System.out.print("The file was not found, default values are used.\n");
+            } catch (NoSuchElementException | StreamCorruptedException el) {
+                System.out.print("The file was corrupted, default values are used.\n");
+                file.renameTo(new File(systemRef.resourcesDir + "Sellers/" + username + "_corrupted.txt"));
             }
         }
+
+        else
+            new File(systemRef.resourcesDir + "Sellers").mkdir();
     }
 
-//    private String[] MaptoArray(Map<String, LinkedList<Product>> map) {
-//        ArrayList<String> products = new ArrayList<>(map.size());
-//        for (Map.Entry<String, LinkedList<Product>> temp : map.entrySet())
-//            if (productAvailable(temp.getKey()) == null)
-//                products.add(temp.getKey());
-//
-//        return products.toArray(new String[0]);
-//    }
-
+    /**
+     * User interface of the Seller, overridden from abstract User class
+     */
     @Override
     public void UI(){
         int inputInt = 0;
@@ -144,7 +201,7 @@ public class Seller extends User {
         Scanner scan = new Scanner(System.in);
 
         while (true) {
-            System.out.print("\033[H\033[2JWelcome to the seller menu\nEnter the number of an action:\n1- Order management.\n2- Product Management.\n3- Statistics.\n0- Log out.\n\n");
+            System.out.print("\033[H\033[2JWelcome to the seller menu\nEnter the number of an action:\n1- Order management.\n2- Product Management.\n0- Log out.\n\n");
             inputInt = getInputInt(scan, "Choice: ");
 
             if (inputInt == 1){
@@ -153,88 +210,99 @@ public class Seller extends User {
                     System.out.print("\033[H\033[2JOrder Management:\n0- Go back.\n1- Waiting Orders.\n2- Order History.\n\n");
                     inputInt = getInputInt(scan, "Choice: ");
                     if (inputInt == 1) {
-                        if (!waitingOrders.isEmpty()) {
-                            Object[] orders = waitingOrders.toArray();
+                        Object[] orders = waitingOrders.toArray();
 
-                            int i = 0, pageStart;
-                            boolean flag1 = true;
-                            while (flag1) {
-                                System.out.print("\033[H\033[2JWaiting Orders:\n");
-                                pageStart = i;
-                                System.out.printf("Page %d:\n", i / 8 + 1);
-                                for (; i < orders.length && i < pageStart + 8; ++i) {
-                                    Order order = (Order) orders[i];
-                                    System.out.printf("%d- %06d: %s %d, %s\n", (i + 1),
-                                            order.ID, order.product.getProductName(),
-                                            order.quantity, order.customer);
+                        int i = 0, pageStart;
+                        boolean flag1 = true;
+                        while (flag1) {
+                            System.out.print("\033[H\033[2JWaiting Orders:\n");
+
+                            if (waitingOrders.isEmpty()) {
+                                System.out.print("There are no waiting orders.\n(Tap Enter to go back)");
+                                scan.nextLine();
+                                break;
+                            }
+
+                            pageStart = i;
+                            System.out.printf("Page %d:\n", i / 8 + 1);
+                            for (; i < orders.length && i < pageStart + 8; ++i) {
+                                Order order = (Order) orders[i];
+                                System.out.printf("%d- %06d: %s %d, %s\n", (i + 1),
+                                        order.ID, order.product.getProductName(),
+                                        order.quantity, order.customer);
+                            }
+
+                            System.out.print("\nChoose an action:\n0: Go back\nn: Next page\np: Previous page\ne: Examine the fist order\n\n");
+                            boolean flag2 = true;
+                            while (flag2) {
+                                System.out.print("Choice: ");
+                                inputStr = scan.nextLine();
+
+                                if (inputStr.equals("p")) {
+                                    if (pageStart > 7) {
+                                        i = pageStart - 8;
+                                        flag2 = false;
+                                    }
+
+                                    else
+                                        System.out.print("\033[2A\r\033[JThere are no previous pages.\n");
                                 }
 
-                                System.out.print("\nChoose an action:\n0: Go back\nn: Next page\np: Previous page\ne: Examine the fist order\n\n");
-                                boolean flag2 = true;
-                                while (flag2) {
-                                    System.out.print("Choice: ");
-                                    inputStr = scan.nextLine();
+                                else if (inputStr.equals("n")) {
+                                    if (i >= waitingOrders.size() - 1) {
+                                        System.out.print("\033[2A\r\033[JThere are no next pages.\n");
+                                        i = pageStart;
+                                    }
 
-                                    if (inputStr.equals("p")) {
-                                        if (pageStart > 7) {
-                                            i = pageStart - 8;
+                                    flag2 = false;
+                                }
+
+                                else if (inputStr.equals("0")) {
+                                    flag1 = false;
+                                    flag2 = false;
+                                }
+
+                                else if (inputStr.equals("e")) {
+                                    Order head = waitingOrders.peek();
+                                    System.out.printf("\nOrder %d:\nProduct: %s\nQuantity: %d\nCustomer: %s\nAddress: %s\nPhone Number: %s",
+                                            head.ID, head.product.getProductName(), head.quantity, head.customer, head.address, head.phoneNum);
+                                    System.out.print("\nChoose an action:\n0- Go back\n1- Approve\n2- Reject\n\n");
+                                    while (true) {
+                                        inputInt = getInputInt(scan, "Choice: ");
+                                        if (inputInt == 1) {
+                                            waitingOrders.peek().accept();
+                                            orderHistory.insert(waitingOrders.poll());
+                                            orders = waitingOrders.toArray();
                                             flag2 = false;
-                                        }
-
-                                        else
-                                            System.out.print("\033[2A\r\033[JThere are no previous pages.\n");
-                                    }
-
-                                    else if (inputStr.equals("n")) {
-                                        if (i >= waitingOrders.size() - 1) {
-                                            System.out.print("\033[2A\r\033[JThere are no next pages.\n");
                                             i = pageStart;
+                                            break;
                                         }
 
-                                        flag2 = false;
-                                    }
-
-                                    else if (inputStr.equals("0")) {
-                                        flag1 = false;
-                                        flag2 = false;
-                                    }
-
-                                    else if (inputStr.equals("e")) {
-                                        Order head = waitingOrders.peek();
-                                        System.out.printf("\nOrder %d:\nProduct: %s\nQuantity: %d\nCustomer: %s\nAddress: %s\nPhone Number: %s",
-                                                head.ID, head.product.getProductName(), head.quantity, head.customer, head.address, head.phoneNum);
-                                        System.out.print("\nDo you want to confirm the order? (Answer with yes or no)\n\n");
-                                        while (true) {
-                                            System.out.print("Choice: ");
-                                            inputStr = scan.nextLine();
-                                            if (inputStr.equals("yes")) {
-                                                waitingOrders.peek().accept();
-                                                orderHistory.add(waitingOrders.poll());
-                                                orders = waitingOrders.toArray();
-                                                flag2 = false;
-                                                i = pageStart;
-                                                break;
-                                            }
-
-                                            else if (inputStr.equals("no")) {
-                                                i = pageStart;
-                                                flag2 = false;
-                                                break;
-                                            }
-                                            System.out.print("\033[2A\r\033[JInvalid Input\n");
+                                        if (inputInt == 2) {
+                                            Order target = waitingOrders.poll();
+                                            target.reject();
+                                            orderHistory.insert(target);
+                                            orders = waitingOrders.toArray();
+                                            target.product.setStock(target.product .getStock() + target.quantity);
+                                            flag2 = false;
+                                            i = pageStart;
+                                            break;
                                         }
-                                    }
 
-                                    else {
+                                        else if (inputInt == 0) {
+                                            i = pageStart;
+                                            flag2 = false;
+                                            break;
+                                        }
+
                                         System.out.print("\033[2A\r\033[JInvalid Input\n");
                                     }
                                 }
-                            }
-                        }
 
-                        else {
-                            System.out.print("There are no waiting orders.\n(Tap Enter to go back)");
-                            scan.nextLine();
+                                else {
+                                    System.out.print("\033[2A\r\033[JInvalid Input\n");
+                                }
+                            }
                         }
                     }
 
@@ -332,7 +400,7 @@ public class Seller extends User {
             else if (inputInt == 2){
                 //Product management
                 while (true) {
-                    System.out.print("\033[H\033[2JProduct Management:\n");
+                    System.out.print("\033[H\033[2JProduct Management:");
                     System.out.print("\nChoose an action:\n0- Go back.\n1- View your products.\n2- Add a new product from the pool.\n3- Send a new product request to the system.\n\n");
                     inputInt = getInputInt(scan, "Choice: ");
 
@@ -340,7 +408,7 @@ public class Seller extends User {
                         break;
                     }
 
-                    if (inputInt == 1){
+                    else if (inputInt == 1) {
                         if (!productList.isEmpty()) {
                             boolean flag1 = true;
                             int i = 0, pageStart;
@@ -406,6 +474,14 @@ public class Seller extends User {
 
                                                 else if (inputInt == 1) {
                                                     productList.remove(target);
+                                                    getProduct(product.getProductName()).remove(product);
+
+                                                    for (BinarySearchTree<Product> temp : getProducts())
+                                                        if (temp.getData() != null && temp.getData().getProductName().equals(product.getProductName())) {
+                                                            temp.remove(product);
+                                                            break;
+                                                        }
+
                                                     i = pageStart;
                                                     flag2 = false;
                                                     break;
@@ -429,7 +505,7 @@ public class Seller extends User {
                         }
                     }
 
-                    if (inputInt == 2){
+                    else if (inputInt == 2) {
                         String[] products = getProductsMap().keySet().toArray(new String[0]);
 
                         if (products.length != 0) {
@@ -489,7 +565,9 @@ public class Seller extends User {
                                                         i = pageStart;
                                                         flag2 = false;
                                                         break;
-                                                    } else if (inputInt == 1) {
+                                                    }
+
+                                                    else if (inputInt == 1) {
                                                         double price;
                                                         System.out.print("\n\n");
                                                         while (true) {
@@ -508,10 +586,13 @@ public class Seller extends User {
                                                         Product newProduct = new Product(products[target], username, price, stock);
                                                         productList.add(newProduct);
                                                         getProduct(products[target]).add(newProduct);
-
+/*
                                                         for (BinarySearchTree<Product> temp : getProducts())
-                                                            if (temp.getData() != null && temp.getData().getProductName().equals(products[target]))
+                                                            if (temp.getData() != null && temp.getData().getProductName().equals(products[target])) {
                                                                 temp.add(newProduct);
+                                                                break;
+                                                            }
+  */                                                      updateBST();
 
                                                         i = pageStart;
                                                         flag2 = false;
@@ -548,11 +629,26 @@ public class Seller extends User {
                             scan.nextLine();
                         }
                     }
-                }
-            }
 
-            else if(inputInt == 3) {
-                System.out.print("To Be Implemented\n");
+                    else if (inputInt == 3) {
+                        System.out.print("\n\nEnter the name of the new product, or 0 to go back: ");
+                        inputStr = scan.nextLine();
+                        if (inputStr.equals("0"))
+                            break;
+
+                        else if (newProductRequest(inputStr))
+                            System.out.print("The product will be added to the pool when it's approved by the admins.\n(Tap Enter to go back)");
+
+                        else
+                            System.out.print("This product already exists.\n(Tap Enter to go back)");
+
+                        scan.nextLine();
+                    }
+
+                    else {
+                        System.out.println("Invalid choice, please try again.");
+                    }
+                }
             }
 
             else if (inputInt == 0) {
@@ -572,17 +668,17 @@ public class Seller extends User {
         }
     }
 
+    /**
+     * Method to save informations to the file
+     * @throws IOException to avoid any crash
+     */
     public void saveToFile() throws IOException {
+        new File(systemRef.resourcesDir + "Sellers").mkdir();
         FileWriter file = new FileWriter(systemRef.resourcesDir + "Sellers/" + username + ".txt");
         file.write(username + "\n");
 
-        for (Product product : productList) {
-            try {
-                file.write(product.getProductName() + " ");
-            } catch (Exception e) {
-                System.out.print("A product not present in the system was detected\n(Not added to the file)\n");
-            }
-        }
+        for (Product product : productList)
+            file.write(product.getProductName() + " ");
 
         file.write("\n");
 
@@ -591,12 +687,19 @@ public class Seller extends User {
 
         file.write("\n");
 
-        for (Order order : orderHistory)
-            file.write(order + "|");
+        Order[] old = orderHistory.toArray();
+        if (old != null)
+            for (Order order : old)
+                file.write(order + "|");
 
         file.close();
     }
 
+    /**
+     * Method to see if given product is in the productList or not
+     * @param productName Name of the product
+     * @return Returns product whose name is given in the parameters
+     */
     public Product productAvailable(String productName) {
         for (Product product : productList)
             if (product.getProductName().equals(productName))
@@ -605,7 +708,22 @@ public class Seller extends User {
         return null;
     }
 
-    public void addOrder (Product product, int ID, int quantity, String customer, String phoneNum, String address) {
+    /**
+     * Method to add order to the waiting orders
+     * @param product Product to be ordered
+     * @param ID ID of the product
+     * @param quantity Quantity of the product
+     * @param customer Customer who have bought the product
+     * @param phoneNum Phone number of the customer
+     * @param address Address of the customer
+     */
+    public boolean addOrder (Product product, int ID, int quantity, String customer, String phoneNum, String address) {
+        if (product.getStock() - quantity < 0){
+            System.out.println("There is no enough stock.");
+            return false;
+        }
         waitingOrders.add(new Order(product, ID, quantity, customer, phoneNum, address));
+        product.setStock(product.getStock() - quantity);
+        return true;
     }
 }

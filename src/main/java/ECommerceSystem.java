@@ -7,9 +7,16 @@ import java.util.function.BiConsumer;
 
 import main.DataStructures.Trees.BinarySearchTree;
 
+/**
+ * Class to control whole E-commerce system
+ */
 @SuppressWarnings("unchecked")
 public class ECommerceSystem {
-	protected final String resourcesDir = System.getProperty("user.dir") + "/bin/main/resources/";
+	/**
+	 * Constant variable for file paths
+	 */
+	protected final String resourcesDir = System.getProperty("user.dir") + "/src/main/resources/";
+	
 	private Map<String, String> Sellers = new HashMap<>();
 	private Map<String, String> Customers = new HashMap<>();
 	private Map<String, String> Admins = new HashMap<>();
@@ -19,17 +26,36 @@ public class ECommerceSystem {
 	private Map<Integer, Integer> UnproccessedOrders = new HashMap<>();
 	private static int lastID = 0;
 
+	/**
+	 * Inner static abstract User class
+	 */
 	public static abstract class User {
+		/** System that user belongs to */
 		protected ECommerceSystem systemRef;
+		/** Username of the user */
 		protected String username;
 
-		User(String usernameValue, ECommerceSystem callerSystem){
-			username = usernameValue;
+		/**
+		 * Constructor for class User
+		 * @param userNameValue Username of the user
+		 * @param callerSystem System that the user belongs to
+		 */
+		User(String userNameValue, ECommerceSystem callerSystem){
+			username = userNameValue;
 			systemRef = callerSystem;
 		}
 
+		/**
+		 * Abstract user interface class
+		 */
 		protected abstract void UI();
 
+		/**
+		 * Getter for the product
+		 * @param productName Name of the product
+		 * @param seller Name of the seller of the product
+		 * @return Product that identified with parameters
+		 */
 		protected Product getProduct(String productName, String seller) {
 			LinkedList<Product> targetList = systemRef.products.get(productName);
 			if(targetList != null)
@@ -39,10 +65,20 @@ public class ECommerceSystem {
 			return null;
 		}
 
+		/**
+		 * Getter for the products linked list
+		 * @param productName Name of the product
+		 * @return LinkedList that consists of Products
+		 */
 		protected LinkedList<Product> getProduct(String productName) {
 			return systemRef.products.get(productName);
 		}
 
+		/**
+		 * Method to control if given string is integer or not
+		 * @param str String that will be checked whether it consists of number or not
+		 * @return Boolean value to identify if string is integer or not
+		 */
 		public static boolean isInteger(String str) {
 			if (str == null) {
 				return false;
@@ -60,43 +96,82 @@ public class ECommerceSystem {
 			return true;
 		}
 
+		/**
+		 * Incrementer for the products' ID
+		 */
 		protected void incrementID(){
 			systemRef.lastID++;
 		}
 
+		/**
+		 * Getter for the products' map
+		 * @return Map that consists of product names and their sellers
+		 */
 		protected Map<String, LinkedList<Product>> getProductsMap(){
 			return systemRef.products;
 		}
 
+		/**
+		 * Getter for ID of the products
+		 * @return ID of the products
+		 */
 		protected int getID(){
 			return systemRef.lastID;
 		}
 
+		/**
+		 * Method to update waiting orders
+		 * @param idValue ID of the product
+		 * @param situation Integer to represent situation (-1 for cancelled, 0 for processing, 1 for finished)
+		 */
 		protected void updateOrders(int idValue, int situation){
 			systemRef.UnproccessedOrders.put(idValue, situation);
 		}
 
+		/**
+		 * Getter for the orders map
+		 * @return Map that consists of ID and situation of the products
+		 */
 		protected HashMap<Integer, Integer> getOrders(){
 			return (HashMap)systemRef.UnproccessedOrders;
 		}
 
+		/**
+		 * Getter for the products ArrayList
+		 * @return ArrayList that consists of bst for each product
+		 */
 		protected ArrayList<BinarySearchTree<Product>> getProducts() {
 			return systemRef.productsOrdered;
 		}
 
+		protected void updateBST(){
+			systemRef.createBST();
+		}
+
+		/**
+		 * Password changer for users
+		 * @param newPass New password
+		 * @throws InvalidClassException for not allowed class
+		 */
 		protected void changePass (String newPass) throws InvalidClassException {
 			if (getClass().equals(Seller.class))
-				systemRef.Sellers.putIfAbsent(username, newPass);
+				systemRef.Sellers.put(username, newPass);
 
 			else if (getClass().equals(Customer.class))
-				systemRef.Customers.putIfAbsent(username, newPass);
+				systemRef.Customers.put(username, newPass);
 
 			else if (getClass().equals(Admin.class))
-				systemRef.Admins.putIfAbsent(username, newPass);
+				systemRef.Admins.put(username, newPass);
 
 			else throw new InvalidClassException("This user is not allowed in the system");
 		}
 
+		/**
+		 * Method to get input as integer
+		 * @param scan Scanner to get input
+		 * @param loopMsg String value
+		 * @return integer representation of the input
+		 */
 		protected int getInputInt(Scanner scan, String loopMsg) {
 			while (true) {
 				System.out.print(loopMsg);
@@ -110,23 +185,48 @@ public class ECommerceSystem {
 				}
 			}
 		}
+
+		/**
+		 * Method to create request to add new product to the product list
+		 * @param product Name of the product that will be requested
+		 * @return boolean value to indicate if request is sent or not
+		 */
+		protected boolean newProductRequest (String product) {
+			if (systemRef.products.containsKey(product))
+				return false;
+
+			return systemRef.Requests.add(new ProductRequest(product));
+		}
 	}
 
+	/**
+	 * Method to create binary search tree for the products
+	 */
 	private void createBST() {
 		productsOrdered = new ArrayList();
 		for (Map.Entry<String, LinkedList<Product>> entry : products.entrySet()) {
 			productsOrdered.add(new BinarySearchTree());
 			LinkedList<Product> temp = entry.getValue();
-			for (Product product : temp) productsOrdered.get(productsOrdered.size() - 1).add(product.clone());
+			for (Product product : temp) productsOrdered.get(productsOrdered.size() - 1).add(product);
 		}
 	}
 
+	/**
+	 * Inner class for the products
+	 */
 	protected static class Product implements Comparable<Product>, Cloneable {
 		private final String productName;
 		private final String sellerName;
 		private double price;
 		private int stock;
 
+		/**
+		 * Constructor for the Product
+		 * @param productName Name of the product
+		 * @param sellerName Name of the seller
+		 * @param price Price of the product
+		 * @param stock Stock amount of the product
+		 */
 		public Product(String productName, String sellerName, double price, int stock) {
 			this.productName = productName;
 			this.sellerName = sellerName;
@@ -134,6 +234,10 @@ public class ECommerceSystem {
 			this.stock = stock;
 		}
 
+		/**
+		 * Overridden toString method
+		 * @return String representation of the product
+		 */
 		public String toString(){
 			StringBuilder strb = new StringBuilder();
 			strb.append(sellerName).append(" ")
@@ -143,31 +247,60 @@ public class ECommerceSystem {
 			return strb.toString();
 		}
 
+		/**
+		 * Overridden compareTo method to compare products by their prices
+		 * @param o Product that will be compared
+		 * @return Integer value to represent bigger, smaller, or equal situations
+		 */
 		@Override
 		public int compareTo(Product o){
 			return Double.compare(price, o.price);
 		}
 
+		/**
+		 * Getter for the product name
+		 * @return Name of the product
+		 */
 		public String getProductName() {
 			return productName;
 		}
 
+		/**
+		 * Getter for the product stock
+		 * @return Stock of the product
+		 */
 		public int getStock() {
 			return stock;
 		}
 
+		/**
+		 * Setter for the stock of the product
+		 * @param stock Stock of the product
+		 */
 		public void setStock(int stock) {
 			this.stock = stock;
 		}
 
+		/**
+		 * Getter for the name of the seller
+		 * @return Name of the seller
+		 */
 		public String getSellerName() {
 			return sellerName;
 		}
 
+		/**
+		 * Getter for the product price
+		 * @return Price of the product
+		 */
 		public double getPrice() {
 			return price;
 		}
 
+		/**
+		 * Clone method to copy product
+		 * @return Product that will be cloned
+		 */
 		public Product clone() {
 			try {
 				Product copy = (Product) super.clone();
@@ -180,11 +313,22 @@ public class ECommerceSystem {
 		}
 	}
 
+	/**
+	 * Inner Admin class
+	 */
 	private class Admin extends User {
+		/**
+		 * Constructor for the Admin class which calls User's constructor
+		 * @param usernameValue username of the Adming
+		 * @param callerSystem System that Admin belongs to
+		 */
 		public Admin(String usernameValue, ECommerceSystem callerSystem) {
 			super(usernameValue, callerSystem);
 		}
 
+		/**
+	     * User interface of the Admin, overridden from abstract User class
+	     */
 		public void UI() {
 			int choice;
 			boolean flag = true;
@@ -269,42 +413,79 @@ public class ECommerceSystem {
 		}
 	}
 
+	/**
+	 * Inner Request class
+	 */
 	private abstract static class Request implements Comparable<Request> {
+		/**
+		 * Priority value for the requests
+		 */
 		protected int priority;
 
+		/**
+		 * Compare method to compare requests by their priority value
+		 * @param o Other request
+		 * @return int to represent relation of bigger, smaller, or equal
+		 */
 		public int compareTo(Request o) {
 			return priority - o.priority;
 		}
 	}
 
+	/**
+	 * Inner SellerRequest class extends Request
+	 */
 	protected static class SellerRequest extends Request {
 		private User user;
 		private String password;
 
+		/**
+		 * Constructor for SellerRequest class
+		 * @param user User of the system
+		 * @param password Password of the user
+		 */
 		public SellerRequest(User user, String password) {
 			this.user = user;
 			this.password = password;
 			priority = 0;
 		}
 
+		/**
+		 * Overridden toString method
+		 * @return String representation of the class
+		 */
 		public String toString() {
 			return "Seller request: " + user.username;
 		}
 	}
 
+	/**
+	 * Inner ProductRequest class extends Request
+	 */
 	protected static class ProductRequest extends Request {
 		private String productName;
 
+		/**
+		 * Constructor for ProductRequest class
+		 * @param name Name of the product
+		 */
 		public ProductRequest(String name) {
 			productName = name;
 			priority = 1;
 		}
 
+		/**
+		 * Overridden toString method
+		 * @return String representation of the class
+		 */
 		public String toString() {
 			return "Product request: " + productName;
 		}
 	}
 
+	/**
+	 * No parameter constructor for the system
+	 */
 	public ECommerceSystem() {
 		//READING FROM FILES
 		try {
@@ -361,6 +542,9 @@ public class ECommerceSystem {
 		}
 	}
 
+	/**
+	 * Starter menu of the E-Commerce System
+	 */
 	public void menu() {
 		boolean flag = true;
 		System.out.println("~~~~ Welcome to E-Commerce System ~~~~\n--------------------------------------");
@@ -489,6 +673,10 @@ public class ECommerceSystem {
 		} while (flag);
 	}
 
+	/**
+	 * Method to add product to list
+	 * @param productName Name of the product that will be added to list
+	 */
 	private void addProduct(String productName) {
 		if (!products.containsKey(productName)) {
 			products.put(productName, new LinkedList());
@@ -496,13 +684,23 @@ public class ECommerceSystem {
 		} else System.out.println("This product already exists.");
 	}
 
+	/**
+	 * Method to remove product from the list
+	 * @param productName Name of the product that will be removed from the list
+	 */
 	private void removeProduct(String productName) {
 		if (products.containsKey(productName)) {
-			products.remove(productName);
-			createBST();
+			if (products.get(productName).size() == 0){
+				products.remove(productName);
+				createBST();
+			}
+			else System.out.println("There is/are seller(s) for this product.");
 		} else System.out.println("This product doesn't exist.");
 	}
 
+	/**
+	 * Method to save products to the txt file
+	 */
 	private void saveProducts() {
 		try {
 			FileWriter writer = new FileWriter(resourcesDir + "Products.txt");
@@ -522,6 +720,9 @@ public class ECommerceSystem {
 		}
 	}
 
+	/**
+	 * Method to save customers to the txt file
+	 */
 	private void saveCustomers() {
 		try {
 			File file = new File(resourcesDir + "Customers.txt");
@@ -540,6 +741,9 @@ public class ECommerceSystem {
 		}
 	}
 
+	/**
+	 * Method to save sellers to the txt file
+	 */
 	private void saveSellers() {
 		try {
 			File file = new File(resourcesDir + "Sellers.txt");
@@ -558,6 +762,9 @@ public class ECommerceSystem {
 		}
 	}
 
+	/**
+	 * Method to save requests to the txt file
+	 */
 	private void saveRequests() {
 		try {
 			FileWriter writer = new FileWriter(resourcesDir + "Requests.txt");
@@ -576,6 +783,9 @@ public class ECommerceSystem {
 		}
 	}
 
+	/**
+	 * Method to save orders to the txt file
+	 */
 	private void saveOrders(){
 		try{
 			FileWriter writer = new FileWriter(resourcesDir + "Orders.txt");
@@ -592,6 +802,9 @@ public class ECommerceSystem {
 		}
 	}
 
+	/**
+	 * Exit method to save all informations necessary to txt files
+	 */
 	private void exit() {
 		saveProducts();
 		saveCustomers();

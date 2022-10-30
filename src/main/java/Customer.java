@@ -1,5 +1,6 @@
 package main.java;
 
+import main.DataStructures.Graph.*;
 import main.DataStructures.Trees.BinarySearchTree;
 import main.java.ECommerceSystem.*;
 
@@ -15,23 +16,35 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 
+/**
+ * Class to represent Customers in the system
+ */
 @SuppressWarnings("unchecked")
 public class Customer extends ECommerceSystem.User {
     private LinkedList<Pair<Product, Integer>> basket = new LinkedList();
     private LinkedList<Pair<Pair<Product, Integer>, Pair<Integer, Integer>>> formerOrders = new LinkedList();
     private LinkedList<Pair<Pair<Product, Integer>, Pair<Integer, Integer>>> orders = new LinkedList();
+    private MatrixGraph graph= new MatrixGraph(getID(), true);
     private double wallet = 0.0;
 
+    /**
+     * Constructor for customer
+     * @param usernameValue Username of the customer
+     * @param callerSystem System that user belongs to
+     */
     public Customer(String usernameValue, ECommerceSystem callerSystem) {
         super(usernameValue, callerSystem);
+        new File(systemRef.resourcesDir + "Customers").mkdir();
 
         try{
             File file = new File(systemRef.resourcesDir + "Customers/" + username + ".txt");
             if (file.exists()) {
                 Scanner scan = new Scanner(file);
 
+                //Read wallet from the file
                 wallet = Double.parseDouble(scan.nextLine());
 
+                //Read basket from the file
                 int basketSize = Integer.parseInt(scan.nextLine());
                 for (int i = 0; i < basketSize; ++i){
                     String product = scan.next();
@@ -39,10 +52,10 @@ public class Customer extends ECommerceSystem.User {
                     Double price = Double.parseDouble(scan.next());
                     int stock = Integer.parseInt(scan.next());
                     int amount = Integer.parseInt(scan.next());
-                    basket.add(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount));
+                    basket.add(new Pair<Product, Integer>(getProduct(product, seller), amount));
                 }
 
-
+                //Read former orders from the file
                 int formerOrdersSize = Integer.parseInt(scan.next());
                 for (int i = 0; i < formerOrdersSize; ++i){
                     String product = scan.next();
@@ -56,12 +69,13 @@ public class Customer extends ECommerceSystem.User {
                     int situation = orderSituations.get(id);
 
                     if (situation != 0){
-                        formerOrders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
+                        formerOrders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(getProduct(product,seller), amount), new Pair<Integer, Integer>(id, situation)));
                     }
                     else
-                        orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
+                        orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(getProduct(product,seller), amount), new Pair<Integer, Integer>(id, situation)));
                 }
 
+                //Read orders from the file
                 int ordersSize = Integer.parseInt(scan.next());
                 for (int i = 0; i < ordersSize; ++i){
                     String product = scan.next();
@@ -75,35 +89,29 @@ public class Customer extends ECommerceSystem.User {
                     int situation = orderSituations.get(id);
 
                     if (situation != 0){
-                        formerOrders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
+                        formerOrders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(getProduct(product,seller), amount), new Pair<Integer, Integer>(id, situation)));
                         if (situation == -1) wallet += amount * price;
                     }
                     else
-                        orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(new Product(product, seller, price, stock), amount), new Pair<Integer, Integer>(id, situation)));
+                        orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(new Pair<Product, Integer>(getProduct(product,seller), amount), new Pair<Integer, Integer>(id, situation)));
 
                 }
             }
-                        /*
-                            cüzdan
-                            sepet
-                            önceki siparişler
-                            şuanki siparişler
-                        */
-
-            /*
-                    100
-                    1
-                    laptop ikbal 10.0 15 3
-                    1
-                    laptop ikbal 10.0 15 3 0
-                    0
-            */
         } catch (Exception e) {
             System.out.println("Error during opening the file.");
             e.printStackTrace();
         }
+
+        for (int i = 0; i < getID() && i < orders.size(); ++i){
+            Pair<Pair<Product, Integer>, Pair<Integer, Integer>> newIndexElement = orders.get(i);
+            if (newIndexElement != null && newIndexElement.getValue().getValue() != -1)
+                graph.insert(new Edge(newIndexElement.getValue().getKey(), i));
+        }
     }
 
+    /**
+     * Exit method to save orders and walet to file
+     */
     private void exit(){
         try{
             FileWriter writer = new FileWriter(systemRef.resourcesDir + "Customers/" + username + ".txt");
@@ -129,29 +137,51 @@ public class Customer extends ECommerceSystem.User {
 
     }
 
+    /**
+     * Inner Pair class
+     */
     private class Pair<K, V>{
         public K key;
         public V value;
 
+        /**
+         * No parameter constructor to start key and value with null
+         */
         public Pair(){
             key = null;
             value = null;
         }
 
+        /**
+         * Constructor for pair to start key and value
+         * @param key Key of the pair
+         * @param value Value of the pair 
+         */
         public Pair(K key, V value){
             this.key = key;
             this.value = value;
         }
 
+        /**
+         * Getter for the key
+         * @return Returns key of the pair
+         */
         public K getKey(){
             return key;
         }
 
+        /**
+         * Getter for the value
+         * @return Returns value of the pair
+         */
         public V getValue(){
             return value;
         }
     }
 
+    /**
+     * User interface of the Customer, overridden from abstract User class
+     */
     @Override
     public void UI() {
         Map<String, LinkedList<Product>> products = getProductsMap();
@@ -162,6 +192,7 @@ public class Customer extends ECommerceSystem.User {
 
         System.out.printf("\nWelcome dear %s!", username);
 
+        /*****************************************************MENU****************************************************/
         do {
             try {
                 System.out.println("\nWhat do you want to do?");
@@ -169,19 +200,26 @@ public class Customer extends ECommerceSystem.User {
                 System.out.printf("Choice: ");
                 choice = scan.nextInt();
                 scan.nextLine();
+                //EXIT
                 if (choice == 0) {
                     System.out.printf("Goodbye %s!\n", username);
                     flag = false;
                     exit();
-                } else if (choice == 1) {
+                }
+                //CHANGING PASSWORD
+                else if (choice == 1) {
                     System.out.printf("Enter your new password: ");
                     String newPassword = scan.nextLine();
                     newPassword.trim();
                     changePass(newPassword);
                     System.out.println("Your password has been changed successfully!");
-                } else if (choice == 2) {
+                }
+                //DISPLAY PRODUCTS
+                else if (choice == 2) {
                     displayProduct();
-                } else if (choice == 3) {
+                }
+                //CHOOSE A PRODUCT AND SEE SELLERS
+                else if (choice == 3) {
                     String choiceProduct;
                     System.out.printf("Please enter the product's name: ");
                     choiceProduct = scan.nextLine();
@@ -214,7 +252,9 @@ public class Customer extends ECommerceSystem.User {
                             }
                         }
                     }
-                } else if (choice == 4) {
+                }
+                //ADD PRODUCT TO BASKET
+                else if (choice == 4) {
                     Product toOrder = null;
                     String choiceProduct;
                     System.out.printf("Please enter the product's name: ");
@@ -269,7 +309,9 @@ public class Customer extends ECommerceSystem.User {
                     
                     System.out.println("Product(s) added successfully to your basket");
 
-                } else if (choice == 5){
+                }
+                //SEE THE BASKET
+                else if (choice == 5){
                     if (basket.size() == 0) System.out.println("Basket is empty.");
                     else{
                         for (Pair<Product, Integer> p : basket){
@@ -277,7 +319,9 @@ public class Customer extends ECommerceSystem.User {
                         }
                     }
                     
-                } else if (choice == 6){
+                }
+                //ADD MONEY TO ACCOUNT 
+                else if (choice == 6){
                     boolean walletFlag = true;
                     while (walletFlag){
                         try{
@@ -300,9 +344,13 @@ public class Customer extends ECommerceSystem.User {
                             e.printStackTrace();
                         }
                     }
-                } else if (choice == 7){
+                }
+                //SEE MONEY
+                else if (choice == 7){
                     System.out.println("Wallet: $" + wallet);
-                } else if (choice == 8){
+                }
+                //ORDER 
+                else if (choice == 8){
                     if (basket.isEmpty()){System.out.println("Your basket is empty."); continue;}
                     System.out.printf("Please enter the address: ");
                     String addr = scan.nextLine();
@@ -330,21 +378,28 @@ public class Customer extends ECommerceSystem.User {
                     if (sum > wallet){ System.out.println("There is no enough money at your wallet."); continue; }
                     wallet -= sum;
                     for (Pair<Product, Integer> p : basket){
-                        orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(p, new Pair<Integer, Integer>(getID(), 0)));
+                        
                         Seller seller = new Seller(p.getKey().getSellerName(), systemRef);
-                        seller.addOrder(p.getKey(), getID(), p.getValue(), username, phone.toString(), addr);
-                        seller.saveToFile();
-                        updateOrders(getID(), 0);
-                        incrementID();
+                        if (seller.addOrder(p.getKey(), getID(), p.getValue(), username, phone.toString(), addr)){
+                            orders.add(new Pair<Pair<Product, Integer>, Pair<Integer, Integer>>(p, new Pair<Integer, Integer>(getID(), 0)));
+                            seller.saveToFile();
+                            updateOrders(getID(), 0);
+                            incrementID();
+                        }
+                        else wallet += p.getKey().getPrice()*p.getValue();
                     }
                     basket.clear();
-                } else if (choice == 9){
+                }
+                //SEE ORDERS 
+                else if (choice == 9){
                     if (formerOrders.size() == 0) System.out.println("There is no former order.");
                     else{
                         for (Pair<Pair<Product, Integer>, Pair<Integer, Integer>> p : formerOrders) 
                             System.out.println("Product: " + p.getKey().getKey().getProductName() + " - Seller: " + p.getKey().getKey().getSellerName() + " - Price: " + p.getKey().getKey().getPrice() + " - Amount: " + p.getKey().getValue());
                     }
-                } else if (choice == 10){
+                }
+                //SEE PREVIOUS ORDERS 
+                else if (choice == 10){
                     if (formerOrders.size() == 0 && orders.size() == 0) System.out.println("There is no orders yet.");
                     else{
                         for (Pair<Pair<Product, Integer>, Pair<Integer, Integer>> p : formerOrders){
@@ -356,7 +411,8 @@ public class Customer extends ECommerceSystem.User {
                             System.out.println("Product: " + p.getKey().getKey().getProductName() + " - Seller: " + p.getKey().getKey().getSellerName() + " - Price: " + p.getKey().getKey().getPrice() + " - Amount: " + p.getKey().getValue() + " - Status: WAITING");
                         }
                     }
-                } else System.out.println("Invalid choice, please try again.");
+                } 
+                else System.out.println("Invalid choice, please try again.");
             } catch (InputMismatchException e) {
                 scan.nextLine();
                 System.out.printf("Error: %s\n", e);
@@ -368,24 +424,37 @@ public class Customer extends ECommerceSystem.User {
         } while (flag);
     }
 
+    /**
+     * Traversal of the binary search tree in ascending order
+     * @param bst Binary Search Tree
+     */
     private void ascendingTraversal(BinarySearchTree<Product> bst){
         if (bst == null) return;
         else{
             ascendingTraversal(bst.getLeftSubtree());
-            System.out.println("Seller: " + bst.getData().getSellerName() + " - Price: " + bst.getData().getPrice() + " - Stock: " + bst.getData().getStock());
+            if (bst.getData()!=null)
+                System.out.println("Seller: " + bst.getData().getSellerName() + " - Price: " + bst.getData().getPrice() + " - Stock: " + bst.getData().getStock());
             ascendingTraversal(bst.getRightSubtree());
         }
     }
 
+    /**
+     * Traversal of the binary search tree in descending order
+     * @param bst Binary Search Tree
+     */
     private void descendingTraversal(BinarySearchTree<Product> bst){
         if (bst == null) return;
         else{
             descendingTraversal(bst.getRightSubtree());
-            System.out.println("Seller: " + bst.getData().getSellerName() + " - Price: " + bst.getData().getPrice() + " - Stock: " + bst.getData().getStock());
+            if (bst.getData()!=null)
+                System.out.println("Seller: " + bst.getData().getSellerName() + " - Price: " + bst.getData().getPrice() + " - Stock: " + bst.getData().getStock());
             descendingTraversal(bst.getLeftSubtree());
         }
     }
 
+    /**
+     * Displaying the products
+     */
     private void displayProduct() {
         Map<String, LinkedList<Product>> products = getProductsMap();
         ArrayList<String> array = new ArrayList(products.size());
@@ -436,6 +505,12 @@ public class Customer extends ECommerceSystem.User {
         return down;
     }
 
+    /**
+     * Swapper method for given parameters in the arraylist
+     * @param array ArrayList whose elements will be swapped
+     * @param a Index of the first value
+     * @param b Index of the second value
+     */
     private static void swap(ArrayList<String> array, int a, int b){
         String temp = array.get(a);
         array.set(a, array.get(b));

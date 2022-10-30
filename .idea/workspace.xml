@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="573025df-0264-44d1-a224-5c1f8cad9b23" name="Changes" comment="Finishing order and product systems">
+    <list default="true" id="573025df-0264-44d1-a224-5c1f8cad9b23" name="Changes" comment="Final edits">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/ECommerceSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/ECommerceSystem.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Seller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Seller.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -29,8 +30,15 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/src/main/java/ECommerceSystem.java" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/main/java/Seller.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/resources/Customers.txt" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/ECommerceSystem.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/resources/Requests.txt" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/java/Customer.java" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/resources/Products.txt" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/resources/Sellers.txt" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/.gitignore" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/main/resources/Admins.txt" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -46,13 +54,16 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../1901042803_HW8" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/bin/main/resources" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="\\wsl$\Ubuntu-20.04\home\enesabdk\School Projects\Java\2.Year\2.Semester\Semester Project\CSE222-e-Shopping-System\bin\main\resources" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="\\wsl$\Ubuntu-20.04\home\enesabdk\School Projects\Java\2.Year\2.Semester\Semester Project\CSE222-e-Shopping-System\src\main\resources\Sellers" />
       <recent name="\\wsl$\Ubuntu-20.04\home\enesabdk\School Projects\Java\2.Year\2.Semester\Semester Project\CSE222-e-Shopping-System\resources" />
@@ -100,7 +111,8 @@
       <workItem from="1654897014107" duration="2606000" />
       <workItem from="1654965405630" duration="7868000" />
       <workItem from="1655030456313" duration="27928000" />
-      <workItem from="1655109112762" duration="12466000" />
+      <workItem from="1655109112762" duration="42091000" />
+      <workItem from="1655228812501" duration="1739000" />
     </task>
     <task id="LOCAL-00001" summary="Updating the input files for the seller">
       <created>1651951663505</created>
@@ -179,7 +191,105 @@
       <option name="project" value="LOCAL" />
       <updated>1655120604714</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Fixing filing problems">
+      <created>1655121824097</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1655121824097</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Implementing SkipList and integrating it in seller class">
+      <created>1655135884537</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1655135884537</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Adding new product requests functionality to the sellers">
+      <created>1655142280517</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1655142280517</updated>
+    </task>
+    <task id="LOCAL-00015" summary="Fixing toArray method for empty SkipLists and updating file management in Seller class">
+      <created>1655145024971</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1655145024971</updated>
+    </task>
+    <task id="LOCAL-00016" summary="Fixing file directories">
+      <created>1655147216948</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1655147216948</updated>
+    </task>
+    <task id="LOCAL-00017" summary="Fixing file directories">
+      <created>1655148363807</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1655148363807</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Fixing file directories">
+      <created>1655148434640</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1655148434640</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Fixing file directories">
+      <created>1655149409615</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1655149409615</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Fixing menu issues in the Seller class">
+      <created>1655150488853</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1655150488853</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Fixing menu issues in the Seller class">
+      <created>1655151468365</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1655151468365</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Fixing menu issues in the Seller class">
+      <created>1655152927052</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1655152927052</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Fixing product requests in Seller class">
+      <created>1655154454052</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1655154454052</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Final edits">
+      <created>1655229171231</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1655229171231</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Final edits">
+      <created>1655229241358</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1655229241358</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -220,45 +330,50 @@
     <MESSAGE value="Prefinal edits to the seller class and added a customer folder" />
     <MESSAGE value="removed buya" />
     <MESSAGE value="Finishing order and product systems" />
-    <option name="LAST_COMMIT_MESSAGE" value="Finishing order and product systems" />
+    <MESSAGE value="Fixing filing problems" />
+    <MESSAGE value="Implementing SkipList and integrating it in seller class" />
+    <MESSAGE value="Adding new product requests functionality to the sellers" />
+    <MESSAGE value="Fixing toArray method for empty SkipLists and updating file management in Seller class" />
+    <MESSAGE value="Fixing file directories" />
+    <MESSAGE value="Fixing menu issues in the Seller class" />
+    <MESSAGE value="Fixing product requests in Seller class" />
+    <MESSAGE value="Final edits" />
+    <option name="LAST_COMMIT_MESSAGE" value="Final edits" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
-          <line>107</line>
-          <option name="timeStamp" value="34" />
+          <url>file://$PROJECT_DIR$/src/main/DataStructures/SkipList.java</url>
+          <line>79</line>
+          <option name="timeStamp" value="42" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/DataStructures/SkipList.java</url>
+          <line>81</line>
+          <option name="timeStamp" value="43" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
-          <line>99</line>
-          <option name="timeStamp" value="35" />
+          <line>636</line>
+          <option name="timeStamp" value="75" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
-          <line>100</line>
-          <option name="timeStamp" value="36" />
+          <url>file://$PROJECT_DIR$/src/main/java/ECommerceSystem.java</url>
+          <line>194</line>
+          <option name="timeStamp" value="76" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
-          <line>101</line>
-          <option name="timeStamp" value="37" />
+          <url>file://$PROJECT_DIR$/src/main/java/ECommerceSystem.java</url>
+          <line>195</line>
+          <option name="timeStamp" value="77" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
-          <line>102</line>
-          <option name="timeStamp" value="38" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/Seller.java</url>
-          <line>103</line>
-          <option name="timeStamp" value="40" />
+          <url>file://$PROJECT_DIR$/src/main/java/ECommerceSystem.java</url>
+          <line>197</line>
+          <option name="timeStamp" value="78" />
         </line-breakpoint>
       </breakpoints>
-      <default-breakpoints>
-        <breakpoint enabled="true" type="java-exception" />
-      </default-breakpoints>
     </breakpoint-manager>
   </component>
 </project>
